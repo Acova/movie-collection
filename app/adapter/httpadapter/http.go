@@ -1,4 +1,4 @@
-package http_adapter
+package httpadapter
 
 import (
 	"github.com/Acova/movie-collection/app"
