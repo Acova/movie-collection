@@ -1,0 +1,6 @@
+{
+    "name": "Movie Collection Dev Container",
+    "dockerComposeFile": "../docker-compose.yml",
+    "service": "movie-collection",
+    "workspaceFolder": "/app"
+}
