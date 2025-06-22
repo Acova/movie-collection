@@ -1,6 +1,8 @@
-package users
+package domain
 
-import "time"
+import (
+	"time"
+)
 
 type User struct {
 	Email        string
