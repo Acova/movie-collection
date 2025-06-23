@@ -1,6 +1,8 @@
 package httpadapter
 
 import (
+	"reflect"
+
 	"github.com/Acova/movie-collection/app"
 	"github.com/Acova/movie-collection/app/port"
 	"github.com/gin-gonic/gin"
@@ -8,7 +10,7 @@ import (
 
 func StartHttpServer(app *app.App) {
 	userHttpAdapter := &UserHttpAdapter{
-		controller: app.GetPort("user").(*port.UserController),
+		controller: app.GetPort(reflect.TypeOf(&port.UserController{})).(*port.UserController),
 	}
 
 	router := gin.Default()

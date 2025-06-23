@@ -1,29 +1,31 @@
 package app
 
+import "reflect"
+
 type Port interface {
 	GetPortName() string
 }
 
 type App struct {
-	Ports map[string]Port
+	Ports map[reflect.Type]Port
 }
 
 func NewApp() *App {
 	return &App{
-		Ports: make(map[string]Port),
+		Ports: make(map[reflect.Type]Port),
 	}
 }
 
 func (a *App) RegisterPort(port Port) {
-	if _, exists := a.Ports[port.GetPortName()]; exists {
+	if _, exists := a.Ports[reflect.TypeOf(port)]; exists {
 		panic("Port already registered: " + port.GetPortName())
 	}
-	a.Ports[port.GetPortName()] = port
+	a.Ports[reflect.TypeOf(port)] = port
 }
 
-func (a *App) GetPort(name string) Port {
-	if port, exists := a.Ports[name]; exists {
+func (a *App) GetPort(t reflect.Type) Port {
+	if port, exists := a.Ports[t]; exists {
 		return port
 	}
-	panic("Port not found: " + name)
+	panic("Port not found: " + t.Name())
 }
