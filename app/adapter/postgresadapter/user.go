@@ -10,10 +10,10 @@ import (
 type PostgresUser struct {
 	gorm.Model
 	ID           uint
-	Email        string
-	Name         string
-	Password     string
-	DisabledDate time.Time
+	Email        string    `gorm:"not null;uniqueIndex"`
+	Name         string    `gorm:"not null"`
+	Password     string    `gorm:"not null"`
+	DisabledDate time.Time `gorm:"default:NULL"`
 }
 
 func (PostgresUser) TableName() string {
@@ -41,7 +41,18 @@ func NewPostgresUserRepository(postgres *PostgresDBConnection) *PostgresUserRepo
 }
 
 func (repository *PostgresUserRepository) ListUsers() []domain.User {
-	return make([]domain.User, 0)
+	var postgresUsers []PostgresUser
+	result := repository.postgres.DB.Find(&postgresUsers)
+	if result.Error != nil {
+		panic("failed to list users: " + result.Error.Error())
+	}
+
+	users := make([]domain.User, len(postgresUsers))
+	for i, postgresUser := range postgresUsers {
+		users[i] = postgresUser.ToDomain()
+	}
+
+	return users
 }
 
 func (repository *PostgresUserRepository) CreateUser(user domain.User) {

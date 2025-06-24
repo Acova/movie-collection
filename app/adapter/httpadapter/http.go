@@ -9,11 +9,16 @@ import (
 )
 
 func StartHttpServer(app *app.App) {
-	userHttpAdapter := &UserHttpAdapter{
-		controller: app.GetPort(reflect.TypeOf(&port.UserPort{})).(*port.UserPort),
+	userHttpAdapter := &HttpUserAdapter{
+		port: app.GetPort(reflect.TypeOf(&port.UserPort{})).(*port.UserPort),
 	}
 
 	router := gin.Default()
-	router.GET("/users", userHttpAdapter.ListUsers)
+
+	// User routes
+	usersRouterGroup := router.Group("/user")
+	usersRouterGroup.GET("", userHttpAdapter.ListUsers)
+	usersRouterGroup.POST("", userHttpAdapter.CreateUser)
+
 	router.Run("0.0.0.0:8081")
 }

@@ -18,12 +18,7 @@ func (c *UserPort) GetPortName() string {
 }
 
 func (c *UserPort) ListUsers() []domain.User {
-	return make([]domain.User, 0) // @TODO: Implement this method
-	// users, err := c.repo.ListUsers()
-	// if err != nil {
-	// 	return nil, err
-	// }
-	// return users, nil
+	return c.Repo.ListUsers()
 }
 
 func (c *UserPort) CreateUser(user domain.User) {
