@@ -8,7 +8,7 @@ import (
 )
 
 type UserHttpAdapter struct {
-	controller *port.UserController
+	controller *port.UserPort
 }
 
 func (a *UserHttpAdapter) ListUsers(context *gin.Context) {

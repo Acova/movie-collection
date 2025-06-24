@@ -10,7 +10,7 @@ import (
 
 func StartHttpServer(app *app.App) {
 	userHttpAdapter := &UserHttpAdapter{
-		controller: app.GetPort(reflect.TypeOf(&port.UserController{})).(*port.UserController),
+		controller: app.GetPort(reflect.TypeOf(&port.UserPort{})).(*port.UserPort),
 	}
 
 	router := gin.Default()

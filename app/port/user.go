@@ -9,15 +9,15 @@ type UserRepository interface {
 	CreateUser(user domain.User)
 }
 
-type UserController struct {
+type UserPort struct {
 	Repo UserRepository
 }
 
-func (c *UserController) GetPortName() string {
+func (c *UserPort) GetPortName() string {
 	return "user"
 }
 
-func (c *UserController) ListUsers() []domain.User {
+func (c *UserPort) ListUsers() []domain.User {
 	return make([]domain.User, 0) // @TODO: Implement this method
 	// users, err := c.repo.ListUsers()
 	// if err != nil {
@@ -26,6 +26,6 @@ func (c *UserController) ListUsers() []domain.User {
 	// return users, nil
 }
 
-func (c *UserController) CreateUser(user domain.User) {
+func (c *UserPort) CreateUser(user domain.User) {
 	c.Repo.CreateUser(user)
 }

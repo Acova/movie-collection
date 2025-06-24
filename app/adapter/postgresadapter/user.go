@@ -7,7 +7,7 @@ import (
 	"gorm.io/gorm"
 )
 
-type PostgresAdapterUser struct {
+type PostgresUser struct {
 	gorm.Model
 	ID           uint
 	Email        string
@@ -16,11 +16,11 @@ type PostgresAdapterUser struct {
 	DisabledDate time.Time
 }
 
-func (PostgresAdapterUser) TableName() string {
+func (PostgresUser) TableName() string {
 	return "user"
 }
 
-func (u *PostgresAdapterUser) ToDomain() domain.User {
+func (u *PostgresUser) ToDomain() domain.User {
 	return domain.User{
 		Email:        u.Email,
 		Name:         u.Name,
@@ -30,22 +30,22 @@ func (u *PostgresAdapterUser) ToDomain() domain.User {
 	}
 }
 
-type PostgresAdapterUserRepository struct {
+type PostgresUserRepository struct {
 	postgres *PostgresDBConnection
 }
 
-func NewPostgresAdapterUserRepository(postgres *PostgresDBConnection) *PostgresAdapterUserRepository {
-	return &PostgresAdapterUserRepository{
+func NewPostgresUserRepository(postgres *PostgresDBConnection) *PostgresUserRepository {
+	return &PostgresUserRepository{
 		postgres: postgres,
 	}
 }
 
-func (repository *PostgresAdapterUserRepository) ListUsers() []domain.User {
+func (repository *PostgresUserRepository) ListUsers() []domain.User {
 	return make([]domain.User, 0)
 }
 
-func (repository *PostgresAdapterUserRepository) CreateUser(user domain.User) {
-	postgresUser := PostgresAdapterUser{
+func (repository *PostgresUserRepository) CreateUser(user domain.User) {
+	postgresUser := PostgresUser{
 		Email:        user.Email,
 		Name:         user.Name,
 		Password:     user.Password,
