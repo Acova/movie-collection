@@ -7,6 +7,7 @@ import (
 type UserRepository interface {
 	ListUsers() []domain.User
 	CreateUser(user domain.User)
+	GetUserByEmail(email string) (domain.User, error)
 }
 
 type UserPort struct {
@@ -23,4 +24,12 @@ func (c *UserPort) ListUsers() []domain.User {
 
 func (c *UserPort) CreateUser(user domain.User) {
 	c.Repo.CreateUser(user)
+}
+
+func (c *UserPort) GetUserByEmail(email string) (domain.User, error) {
+	user, err := c.Repo.GetUserByEmail(email)
+	if err != nil {
+		return domain.User{}, err
+	}
+	return user, nil
 }

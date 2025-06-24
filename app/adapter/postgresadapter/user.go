@@ -68,3 +68,13 @@ func (repository *PostgresUserRepository) CreateUser(user domain.User) {
 		panic("failed to create user: " + result.Error.Error())
 	}
 }
+
+func (repository *PostgresUserRepository) GetUserByEmail(email string) (domain.User, error) {
+	var postgresUser PostgresUser
+	result := repository.postgres.DB.Where("email = ?", email).First(&postgresUser)
+	if result.Error != nil {
+		return domain.User{}, result.Error
+	}
+
+	return postgresUser.ToDomain(), nil
+}
