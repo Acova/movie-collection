@@ -65,12 +65,7 @@ func getJwtInitParams(userPort *port.UserPort) *jwt.GinJWTMiddleware {
 			userEmail := loginForm.Email
 			userPassword := loginForm.Password
 
-			user, err := userPort.GetUserByEmail(userEmail)
-			if err != nil || user.Password != userPassword {
-				return nil, jwt.ErrFailedAuthentication
-			}
-
-			return user, nil
+			return userPort.GetLoginUser(userEmail, userPassword)
 		},
 		Authorizator: func(data interface{}, c *gin.Context) bool {
 			if _, ok := data.(*domain.User); ok {

@@ -39,6 +39,7 @@ func (a *HttpUserAdapter) CreateUser(context *gin.Context) {
 		context.IndentedJSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 		return
 	}
+
 	a.port.CreateUser(user.ToDomain())
 	context.IndentedJSON(http.StatusCreated, gin.H{"status": "User created"})
 }
