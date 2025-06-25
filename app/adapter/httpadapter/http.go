@@ -1,6 +1,7 @@
 package httpadapter
 
 import (
+	"fmt"
 	"os"
 	"reflect"
 	"time"
@@ -72,7 +73,7 @@ func getJwtInitParams(userPort *port.UserPort) *jwt.GinJWTMiddleware {
 			return user, nil
 		},
 		Authorizator: func(data interface{}, c *gin.Context) bool {
-			if _, ok := data.(domain.User); ok {
+			if _, ok := data.(*domain.User); ok {
 				return true
 			}
 			return false
@@ -87,7 +88,8 @@ func getJwtInitParams(userPort *port.UserPort) *jwt.GinJWTMiddleware {
 		TokenHeadName: "Bearer",
 		TimeFunc:      time.Now,
 		PayloadFunc: func(data interface{}) jwt.MapClaims {
-			if user, ok := data.(domain.User); ok {
+			fmt.Println("Calling PayloadFunc with data:", data)
+			if user, ok := data.(*domain.User); ok {
 				return jwt.MapClaims{
 					"id":    user.Email,
 					"name":  user.Name,
@@ -97,8 +99,9 @@ func getJwtInitParams(userPort *port.UserPort) *jwt.GinJWTMiddleware {
 			return jwt.MapClaims{}
 		},
 		IdentityHandler: func(c *gin.Context) interface{} {
+			fmt.Println("Calling IdentityHandler")
 			claims := jwt.ExtractClaims(c)
-			return domain.User{
+			return &domain.User{
 				Email: claims["email"].(string),
 				Name:  claims["name"].(string),
 			}

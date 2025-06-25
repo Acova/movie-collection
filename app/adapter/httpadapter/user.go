@@ -13,9 +13,9 @@ type HttpUserAdapter struct {
 }
 
 type HttpUser struct {
-	Email    string `json:"email" binding:"required"`
-	Name     string `json:"name" binding:"required"`
-	Password string `json:"password" binding:"required"`
+	Email    string `json:"email" binding:"required,email"`
+	Name     string `json:"name" binding:"required,min=5,max=20"`
+	Password string `json:"password" binding:"required,min=8,max=40"`
 }
 
 func (u *HttpUser) ToDomain() *domain.User {
@@ -33,7 +33,10 @@ func (a *HttpUserAdapter) ListUsers(context *gin.Context) {
 func (a *HttpUserAdapter) CreateUser(context *gin.Context) {
 	var user HttpUser
 
-	context.BindJSON(&user)
+	if err := context.BindJSON(&user); err != nil {
+		context.IndentedJSON(http.StatusBadRequest, gin.H{"error": "Invalid input"})
+		return
+	}
 	a.port.CreateUser(user.ToDomain())
 	context.IndentedJSON(http.StatusCreated, gin.H{"status": "User created"})
 }
