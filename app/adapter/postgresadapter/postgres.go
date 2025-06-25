@@ -12,7 +12,7 @@ type PostgresDBConnection struct {
 	DB *gorm.DB
 }
 
-func NewPostgresDBConnection() (PostgresDBConnection, error) {
+func NewPostgresDBConnection() (*PostgresDBConnection, error) {
 	dsn := fmt.Sprintf(
 		"host=%s user=%s password=%s dbname=%s port=%s sslmode=disable TimeZone=Europe/Lisbon",
 		os.Getenv("DATABASE_HOST"),
@@ -26,7 +26,7 @@ func NewPostgresDBConnection() (PostgresDBConnection, error) {
 		panic("failed to connect to the database: " + err.Error())
 	}
 
-	return PostgresDBConnection{
+	return &PostgresDBConnection{
 		DB: db,
 	}, nil
 }

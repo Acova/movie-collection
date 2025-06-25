@@ -18,8 +18,8 @@ type HttpUser struct {
 	Password string `json:"password" binding:"required"`
 }
 
-func (u *HttpUser) ToDomain() domain.User {
-	return domain.User{
+func (u *HttpUser) ToDomain() *domain.User {
+	return &domain.User{
 		Email:    u.Email,
 		Name:     u.Name,
 		Password: u.Password,

@@ -20,8 +20,8 @@ func (PostgresUser) TableName() string {
 	return "user"
 }
 
-func (u *PostgresUser) ToDomain() domain.User {
-	return domain.User{
+func (u *PostgresUser) ToDomain() *domain.User {
+	return &domain.User{
 		Email:        u.Email,
 		Name:         u.Name,
 		Password:     u.Password,
@@ -31,23 +31,23 @@ func (u *PostgresUser) ToDomain() domain.User {
 }
 
 type PostgresUserRepository struct {
-	postgres PostgresDBConnection
+	postgres *PostgresDBConnection
 }
 
-func NewPostgresUserRepository(postgres PostgresDBConnection) (*PostgresUserRepository, error) {
+func NewPostgresUserRepository(postgres *PostgresDBConnection) (*PostgresUserRepository, error) {
 	return &PostgresUserRepository{
 		postgres: postgres,
 	}, nil
 }
 
-func (repository *PostgresUserRepository) ListUsers() []domain.User {
+func (repository *PostgresUserRepository) ListUsers() []*domain.User {
 	var postgresUsers []PostgresUser
 	result := repository.postgres.DB.Find(&postgresUsers)
 	if result.Error != nil {
 		panic("failed to list users: " + result.Error.Error())
 	}
 
-	users := make([]domain.User, len(postgresUsers))
+	users := make([]*domain.User, len(postgresUsers))
 	for i, postgresUser := range postgresUsers {
 		users[i] = postgresUser.ToDomain()
 	}
@@ -55,7 +55,7 @@ func (repository *PostgresUserRepository) ListUsers() []domain.User {
 	return users
 }
 
-func (repository *PostgresUserRepository) CreateUser(user domain.User) {
+func (repository *PostgresUserRepository) CreateUser(user *domain.User) {
 	postgresUser := PostgresUser{
 		Email:        user.Email,
 		Name:         user.Name,
@@ -69,11 +69,11 @@ func (repository *PostgresUserRepository) CreateUser(user domain.User) {
 	}
 }
 
-func (repository *PostgresUserRepository) GetUserByEmail(email string) (domain.User, error) {
+func (repository *PostgresUserRepository) GetUserByEmail(email string) (*domain.User, error) {
 	var postgresUser PostgresUser
 	result := repository.postgres.DB.Where("email = ?", email).First(&postgresUser)
 	if result.Error != nil {
-		return domain.User{}, result.Error
+		return &domain.User{}, result.Error
 	}
 
 	return postgresUser.ToDomain(), nil
