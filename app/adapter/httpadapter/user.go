@@ -1,6 +1,7 @@
 package httpadapter
 
 import (
+	"fmt"
 	"net/http"
 
 	"github.com/Acova/movie-collection/app/domain"
@@ -34,7 +35,8 @@ func (a *HttpUserAdapter) CreateUser(context *gin.Context) {
 	var user HttpUser
 
 	if err := context.BindJSON(&user); err != nil {
-		context.IndentedJSON(http.StatusBadRequest, gin.H{"error": "Invalid input"})
+		fmt.Println(err)
+		context.IndentedJSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 		return
 	}
 	a.port.CreateUser(user.ToDomain())
