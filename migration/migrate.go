@@ -12,6 +12,10 @@ func main() {
 		panic("Error loading .env file")
 	}
 
-	postgresDbConnection := postgresadapter.NewPostgresDBConnection()
+	postgresDbConnection, err := postgresadapter.NewPostgresDBConnection()
+	if err != nil {
+		panic("Error connecting to the database: " + err.Error())
+	}
+
 	postgresDbConnection.DB.AutoMigrate(&postgresadapter.PostgresUser{})
 }

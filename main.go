@@ -19,8 +19,16 @@ func main() {
 	app := app.NewApp()
 
 	// Initialize the PostgreSQL database adapter
-	dbConnection := postgresadapter.NewPostgresDBConnection()
-	postgresUserRepository := postgresadapter.NewPostgresUserRepository(dbConnection)
+	dbConnection, err := postgresadapter.NewPostgresDBConnection()
+	if err != nil {
+		panic("Error connecting to the database: " + err.Error())
+	}
+
+	// Initialize the repositories
+	postgresUserRepository, err := postgresadapter.NewPostgresUserRepository(dbConnection)
+	if err != nil {
+		panic("Error creating user repository: " + err.Error())
+	}
 
 	// Initialize the controllers
 	userPort := port.UserPort{

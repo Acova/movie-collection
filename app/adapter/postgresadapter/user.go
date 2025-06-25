@@ -31,13 +31,13 @@ func (u *PostgresUser) ToDomain() domain.User {
 }
 
 type PostgresUserRepository struct {
-	postgres *PostgresDBConnection
+	postgres PostgresDBConnection
 }
 
-func NewPostgresUserRepository(postgres *PostgresDBConnection) *PostgresUserRepository {
+func NewPostgresUserRepository(postgres PostgresDBConnection) (*PostgresUserRepository, error) {
 	return &PostgresUserRepository{
 		postgres: postgres,
-	}
+	}, nil
 }
 
 func (repository *PostgresUserRepository) ListUsers() []domain.User {
