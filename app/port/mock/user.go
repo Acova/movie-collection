@@ -6,6 +6,27 @@ import (
 	"github.com/Acova/movie-collection/app/domain"
 )
 
+type MockUserRepository struct {
+	Users []*domain.User
+}
+
+func (r *MockUserRepository) ListUsers() []*domain.User {
+	return r.Users
+}
+
+func (r *MockUserRepository) CreateUser(user *domain.User) {
+	r.Users = append(r.Users, user)
+}
+
+func (r *MockUserRepository) GetUserByEmail(email string) (*domain.User, error) {
+	for _, user := range r.Users {
+		if user.Email == email {
+			return user, nil
+		}
+	}
+	return nil, errors.New("user not found")
+}
+
 type MockUserService struct {
 	Users []*domain.User
 }
