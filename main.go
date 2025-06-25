@@ -14,9 +14,6 @@ func main() {
 		panic("Error loading .env file")
 	}
 
-	// Initialize the application
-	// app := app.NewApp() @TODO: Uncomment if you find any use for an application package
-
 	// Initialize the PostgreSQL database adapter
 	dbConnection, err := postgresadapter.NewPostgresDBConnection()
 	if err != nil {
