@@ -26,8 +26,6 @@ func NewPostgresDBConnection() *PostgresDBConnection {
 		panic("failed to connect to the database: " + err.Error())
 	}
 
-	db.AutoMigrate(&PostgresUser{})
-
 	return &PostgresDBConnection{
 		DB: db,
 	}
