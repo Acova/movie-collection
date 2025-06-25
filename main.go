@@ -1,10 +1,9 @@
 package main
 
 import (
-	"github.com/Acova/movie-collection/app"
 	"github.com/Acova/movie-collection/app/adapter/httpadapter"
 	"github.com/Acova/movie-collection/app/adapter/postgresadapter"
-	"github.com/Acova/movie-collection/app/port"
+	"github.com/Acova/movie-collection/app/service"
 	"github.com/joho/godotenv"
 )
 
@@ -16,7 +15,7 @@ func main() {
 	}
 
 	// Initialize the application
-	app := app.NewApp()
+	// app := app.NewApp() @TODO: Uncomment if you find any use for an application package
 
 	// Initialize the PostgreSQL database adapter
 	dbConnection, err := postgresadapter.NewPostgresDBConnection()
@@ -31,13 +30,8 @@ func main() {
 	}
 
 	// Initialize the controllers
-	userPort := port.UserPort{
-		Repo: postgresUserRepository,
-	}
-
-	// Register the ports
-	app.RegisterPort(&userPort)
+	userService := service.NewUserService(postgresUserRepository)
 
 	// Initialize the HTTP adapter
-	httpadapter.StartHttpServer(app)
+	httpadapter.StartHttpServer(userService)
 }

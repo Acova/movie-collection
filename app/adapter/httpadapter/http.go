@@ -3,27 +3,22 @@ package httpadapter
 import (
 	"fmt"
 	"os"
-	"reflect"
 	"time"
 
-	"github.com/Acova/movie-collection/app"
 	"github.com/Acova/movie-collection/app/domain"
 	"github.com/Acova/movie-collection/app/port"
 	jwt "github.com/appleboy/gin-jwt/v2"
 	"github.com/gin-gonic/gin"
 )
 
-func StartHttpServer(app *app.App) {
-	userPort := app.GetPort(reflect.TypeOf(&port.UserPort{})).(*port.UserPort)
-	httpUserAdapter := &HttpUserAdapter{
-		port: userPort,
-	}
+func StartHttpServer(userService port.UserService) {
+	httpUserAdapter := NewHttpUserAdapter(userService)
 
 	// Create a new Gin engine
 	engine := gin.Default()
 
 	// Middleware to handle JWT
-	jwtMiddleware, err := jwt.New(getJwtInitParams(userPort))
+	jwtMiddleware, err := jwt.New(getJwtInitParams(userService))
 
 	if err != nil {
 		panic("JWT middleware initialization failed: " + err.Error())
@@ -50,7 +45,7 @@ type LoginForm struct {
 	Password string `json:"password" binding:"required"`
 }
 
-func getJwtInitParams(userPort *port.UserPort) *jwt.GinJWTMiddleware {
+func getJwtInitParams(userService port.UserService) *jwt.GinJWTMiddleware {
 	return &jwt.GinJWTMiddleware{
 		Realm:       "movie-collection",
 		Key:         []byte(os.Getenv("JWT_SECRET_KEY")),
@@ -65,7 +60,7 @@ func getJwtInitParams(userPort *port.UserPort) *jwt.GinJWTMiddleware {
 			userEmail := loginForm.Email
 			userPassword := loginForm.Password
 
-			return userPort.GetLoginUser(userEmail, userPassword)
+			return userService.GetLoginUser(userEmail, userPassword)
 		},
 		Authorizator: func(data interface{}, c *gin.Context) bool {
 			if _, ok := data.(*domain.User); ok {

@@ -10,7 +10,7 @@ import (
 )
 
 type HttpUserAdapter struct {
-	port *port.UserPort
+	userService port.UserService
 }
 
 type HttpUser struct {
@@ -27,8 +27,14 @@ func (u *HttpUser) ToDomain() *domain.User {
 	}
 }
 
+func NewHttpUserAdapter(userService port.UserService) *HttpUserAdapter {
+	return &HttpUserAdapter{
+		userService: userService,
+	}
+}
+
 func (a *HttpUserAdapter) ListUsers(context *gin.Context) {
-	context.IndentedJSON(http.StatusOK, a.port.ListUsers())
+	context.IndentedJSON(http.StatusOK, a.userService.ListUsers())
 }
 
 func (a *HttpUserAdapter) CreateUser(context *gin.Context) {
@@ -40,6 +46,6 @@ func (a *HttpUserAdapter) CreateUser(context *gin.Context) {
 		return
 	}
 
-	a.port.CreateUser(user.ToDomain())
+	a.userService.CreateUser(user.ToDomain())
 	context.IndentedJSON(http.StatusCreated, gin.H{"status": "User created"})
 }
