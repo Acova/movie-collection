@@ -75,7 +75,20 @@ func (h *HttpMovieAdapter) CreateMovie(context *gin.Context) {
 }
 
 func (h *HttpMovieAdapter) ListMovies(context *gin.Context) {
-	movies, err := h.movieService.ListMovies(make(map[string]string))
+	filter := make(map[string]string)
+	if title := context.Query("title"); title != "" {
+		filter["title"] = "%" + title + "%"
+	}
+	if director := context.Query("director"); director != "" {
+		filter["director"] = "%" + director + "%"
+	}
+	if genre := context.Query("genre"); genre != "" {
+		filter["genre"] = "%" + genre + "%"
+	}
+	if cast := context.Query("cast"); cast != "" {
+		filter["cast"] = "%" + cast + "%"
+	}
+	movies, err := h.movieService.ListMovies(filter)
 	if err != nil {
 		context.AbortWithError(http.StatusInternalServerError, err)
 		return

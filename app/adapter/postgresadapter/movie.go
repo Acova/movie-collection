@@ -74,6 +74,12 @@ func (repository *PostgresMovieRepository) ListMovies(filters map[string]string)
 		switch field {
 		case "title":
 			db = db.Where("title ILIKE ?", value)
+		case "director":
+			db = db.Where("director ILIKE ?", value)
+		case "genre":
+			db = db.Where("genre ILIKE ?", value)
+		case "cast":
+			db = db.Where("cast ILIKE ?", value)
 		}
 	}
 	result := db.Find(&postgresMovies)
