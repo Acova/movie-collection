@@ -83,15 +83,9 @@ func (h *HttpMovieAdapter) CreateMovie(context *gin.Context) {
 		return
 	}
 
-	userValue, exists := context.Get("id")
-	if !exists {
+	user, loggedIn := GetLoggedInUser(context)
+	if !loggedIn {
 		context.IndentedJSON(http.StatusUnauthorized, gin.H{"error": "User not authenticated"})
-		return
-	}
-
-	user, ok := userValue.(*domain.User)
-	if !ok {
-		context.IndentedJSON(http.StatusInternalServerError, gin.H{"error": "Invalid user data"})
 		return
 	}
 
@@ -163,6 +157,17 @@ func (h *HttpMovieAdapter) UpdateMovie(context *gin.Context) {
 		return
 	}
 
+	user, loggedIn := GetLoggedInUser(context)
+	if !loggedIn {
+		context.IndentedJSON(http.StatusUnauthorized, gin.H{"error": "User not authenticated"})
+		return
+	}
+
+	if movieToUpdate.UserID != user.ID {
+		context.IndentedJSON(http.StatusForbidden, gin.H{"error": "You are not allowed to update this movie"})
+		return
+	}
+
 	updatedMovie := HttpMovie{}
 	if err := context.BindJSON(&updatedMovie); err != nil {
 		context.AbortWithError(http.StatusBadRequest, err)
@@ -190,6 +195,17 @@ func (h *HttpMovieAdapter) DeleteMovie(context *gin.Context) {
 	movie, err := h.movieService.GetMovie(uint(id))
 	if err != nil {
 		context.AbortWithError(http.StatusNotFound, err)
+		return
+	}
+
+	user, loggedIn := GetLoggedInUser(context)
+	if !loggedIn {
+		context.IndentedJSON(http.StatusUnauthorized, gin.H{"error": "User not authenticated"})
+		return
+	}
+
+	if movie.UserID != user.ID {
+		context.IndentedJSON(http.StatusForbidden, gin.H{"error": "You are not allowed to update this movie"})
 		return
 	}
 

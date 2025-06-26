@@ -121,3 +121,17 @@ func handleMiddleware(authMiddleware *jwt.GinJWTMiddleware) gin.HandlerFunc {
 		}
 	}
 }
+
+func GetLoggedInUser(c *gin.Context) (*domain.User, bool) {
+	userValue, exists := c.Get("id")
+	if !exists {
+		return nil, false
+	}
+
+	user, ok := userValue.(*domain.User)
+	if !ok {
+		return nil, false
+	}
+
+	return user, true
+}

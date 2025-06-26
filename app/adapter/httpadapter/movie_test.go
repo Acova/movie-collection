@@ -206,6 +206,13 @@ func TestGetMovie(t *testing.T) {
 	mockContext.Request = request
 	mockContext.Params = gin.Params{gin.Param{Key: "id", Value: "1"}}
 
+	loginUser := &domain.User{
+		ID:    1,
+		Email: "test@test.com",
+		Name:  "Test User",
+	}
+	mockContext.Set("id", loginUser)
+
 	httpAdapter.GetMovie(mockContext)
 
 	movie := &HttpMovie{}
@@ -255,6 +262,7 @@ func TestUpdateMovie(t *testing.T) {
 				Rating:      8.8,
 				Duration:    148,
 				PosterURL:   "https://example.com/inception.jpg",
+				UserID:      1,
 			},
 		},
 	}
@@ -283,6 +291,13 @@ func TestUpdateMovie(t *testing.T) {
 	mockContext, _ := gin.CreateTestContext(mockResponseWriter)
 	mockContext.Request = request
 	mockContext.Params = gin.Params{gin.Param{Key: "id", Value: "1"}}
+
+	loginUser := &domain.User{
+		ID:    1,
+		Email: "test@test.com",
+		Name:  "Test User",
+	}
+	mockContext.Set("id", loginUser)
 
 	httpAdapter.UpdateMovie(mockContext)
 	if len(mockMovieService.Movies) != 1 {
@@ -317,6 +332,7 @@ func TestDeleteMovie(t *testing.T) {
 				Rating:      8.8,
 				Duration:    148,
 				PosterURL:   "https://example.com/inception.jpg",
+				UserID:      1,
 			},
 		},
 	}
@@ -328,6 +344,13 @@ func TestDeleteMovie(t *testing.T) {
 	mockContext, _ := gin.CreateTestContext(mockResponseWriter)
 	mockContext.Request = request
 	mockContext.Params = gin.Params{gin.Param{Key: "id", Value: "1"}}
+
+	loginUser := &domain.User{
+		ID:    1,
+		Email: "test@test.com",
+		Name:  "Test User",
+	}
+	mockContext.Set("id", loginUser)
 
 	httpAdapter.DeleteMovie(mockContext)
 
