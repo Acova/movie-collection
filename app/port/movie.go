@@ -7,7 +7,7 @@ type MovieRepository interface {
 	ListMovies() ([]*domain.Movie, error)
 	GetMovieByTitle(id string) (*domain.Movie, error)
 	UpdateMovie(movie *domain.Movie) error
-	DeleteMovie(id string) error
+	DeleteMovie(movie *domain.Movie) error
 }
 
 type MovieService interface {
@@ -15,5 +15,5 @@ type MovieService interface {
 	ListMovies() ([]*domain.Movie, error)
 	GetMovieByTitle(title string) (*domain.Movie, error)
 	UpdateMovie(movie *domain.Movie) error
-	DeleteMovie(id string) error
+	DeleteMovie(movie *domain.Movie) error
 }

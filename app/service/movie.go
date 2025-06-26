@@ -18,3 +18,27 @@ func NewMovieService(repo port.MovieRepository) *MovieService {
 func (m *MovieService) CreateMovie(movie *domain.Movie) error {
 	return m.Repo.CreateMovie(movie)
 }
+
+func (m *MovieService) ListMovies() ([]*domain.Movie, error) {
+	movies, err := m.Repo.ListMovies()
+	if err != nil {
+		return nil, err
+	}
+	return movies, nil
+}
+
+func (m *MovieService) GetMovieByTitle(title string) (*domain.Movie, error) {
+	movie, err := m.Repo.GetMovieByTitle(title)
+	if err != nil {
+		return nil, err
+	}
+	return movie, nil
+}
+
+func (m *MovieService) UpdateMovie(movie *domain.Movie) error {
+	return m.Repo.UpdateMovie(movie)
+}
+
+func (m *MovieService) DeleteMovie(movie *domain.Movie) error {
+	return m.Repo.DeleteMovie(movie)
+}
