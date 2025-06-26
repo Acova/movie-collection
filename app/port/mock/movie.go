@@ -19,9 +19,9 @@ func (m *MockMovieRepository) ListMovies() ([]*domain.Movie, error) {
 	return m.Movies, nil
 }
 
-func (m *MockMovieRepository) GetMovieByTitle(title string) (*domain.Movie, error) {
+func (m *MockMovieRepository) GetMovie(id uint) (*domain.Movie, error) {
 	for _, movie := range m.Movies {
-		if movie.Title == title {
+		if movie.ID == id {
 			return movie, nil
 		}
 	}
@@ -61,9 +61,9 @@ func (m *MockMovieService) ListMovies() ([]*domain.Movie, error) {
 	return m.Movies, nil
 }
 
-func (m *MockMovieService) GetMovieByTitle(title string) (*domain.Movie, error) {
+func (m *MockMovieService) GetMovie(id uint) (*domain.Movie, error) {
 	for _, movie := range m.Movies {
-		if movie.Title == title {
+		if movie.ID == id {
 			return movie, nil
 		}
 	}

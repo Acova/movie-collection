@@ -27,8 +27,8 @@ func (m *MovieService) ListMovies() ([]*domain.Movie, error) {
 	return movies, nil
 }
 
-func (m *MovieService) GetMovieByTitle(title string) (*domain.Movie, error) {
-	movie, err := m.Repo.GetMovieByTitle(title)
+func (m *MovieService) GetMovie(id uint) (*domain.Movie, error) {
+	movie, err := m.Repo.GetMovie(id)
 	if err != nil {
 		return nil, err
 	}

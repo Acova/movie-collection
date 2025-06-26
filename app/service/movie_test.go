@@ -15,6 +15,7 @@ func TestCreateMovie(t *testing.T) {
 
 	movieService := NewMovieService(mockRepository)
 	movie := &domain.Movie{
+		ID:          1,
 		Title:       "Inception",
 		Synopsis:    "A mind-bending thriller",
 		ReleaseDate: time.Now(),
@@ -50,6 +51,7 @@ func TestListMovies(t *testing.T) {
 	mockRepository := &mock.MockMovieRepository{
 		Movies: []*domain.Movie{
 			{
+				ID:          1,
 				Title:       "Inception",
 				Synopsis:    "A mind-bending thriller",
 				ReleaseDate: time.Now(),
@@ -57,6 +59,7 @@ func TestListMovies(t *testing.T) {
 				Rating:      8.8,
 			},
 			{
+				ID:          2,
 				Title:       "The Matrix",
 				Synopsis:    "A sci-fi classic",
 				ReleaseDate: time.Now(),
@@ -93,10 +96,11 @@ func TestListMovies(t *testing.T) {
 	}
 }
 
-func TestGetMovieByTitle(t *testing.T) {
+func TestGetMovie(t *testing.T) {
 	mockRepository := &mock.MockMovieRepository{
 		Movies: []*domain.Movie{
 			{
+				ID:          1,
 				Title:       "Inception",
 				Synopsis:    "A mind-bending thriller",
 				ReleaseDate: time.Now(),
@@ -107,7 +111,7 @@ func TestGetMovieByTitle(t *testing.T) {
 	}
 
 	movieService := NewMovieService(mockRepository)
-	movie, err := movieService.GetMovieByTitle("Inception")
+	movie, err := movieService.GetMovie(1)
 	if err != nil {
 		t.Errorf("Expected no error, got %v", err)
 	}
@@ -129,6 +133,7 @@ func TestUpdateMovie(t *testing.T) {
 	mockRepository := &mock.MockMovieRepository{
 		Movies: []*domain.Movie{
 			{
+				ID:          1,
 				Title:       "Inception",
 				Synopsis:    "A mind-bending thriller",
 				ReleaseDate: time.Now(),
@@ -140,6 +145,7 @@ func TestUpdateMovie(t *testing.T) {
 
 	movieService := NewMovieService(mockRepository)
 	movie := &domain.Movie{
+		ID:          1,
 		Title:       "Inception",
 		Synopsis:    "An updated synopsis",
 		ReleaseDate: time.Now(),
@@ -163,6 +169,7 @@ func TestDeleteMovie(t *testing.T) {
 	mockRepository := &mock.MockMovieRepository{
 		Movies: []*domain.Movie{
 			{
+				ID:          1,
 				Title:       "Inception",
 				Synopsis:    "A mind-bending thriller",
 				ReleaseDate: time.Now(),

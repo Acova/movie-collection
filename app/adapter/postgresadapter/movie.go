@@ -92,9 +92,9 @@ func (repository *PostgresMovieRepository) CreateMovie(movie *domain.Movie) erro
 	return result.Error
 }
 
-func (repository *PostgresMovieRepository) GetMovieByTitle(title string) (*domain.Movie, error) {
-	var postgresMovie PostgresMovie
-	result := repository.postgres.DB.Where("title = ?", title).First(&postgresMovie)
+func (repository *PostgresMovieRepository) GetMovie(id string) (*domain.Movie, error) {
+	postgresMovie := &PostgresMovie{}
+	result := repository.postgres.DB.First(postgresMovie, id)
 	if result.Error != nil {
 		return nil, result.Error
 	}
