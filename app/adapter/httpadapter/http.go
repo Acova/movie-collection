@@ -11,14 +11,19 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
-func StartHttpServer(userService port.UserService) {
-	httpUserAdapter := NewHttpUserAdapter(userService)
+type HttpServices struct {
+	UserService  port.UserService
+	MovieService port.MovieService
+}
+
+func StartHttpServer(services *HttpServices) {
+	httpUserAdapter := NewHttpUserAdapter(services.UserService)
 
 	// Create a new Gin engine
 	engine := gin.Default()
 
 	// Middleware to handle JWT
-	jwtMiddleware, err := jwt.New(getJwtInitParams(userService))
+	jwtMiddleware, err := jwt.New(getJwtInitParams(services.UserService))
 
 	if err != nil {
 		panic("JWT middleware initialization failed: " + err.Error())
@@ -36,6 +41,15 @@ func StartHttpServer(userService port.UserService) {
 	usersRouterGroup := engine.Group("/user", jwtMiddleware.MiddlewareFunc())
 	usersRouterGroup.GET("", httpUserAdapter.ListUsers)
 	usersRouterGroup.POST("", httpUserAdapter.CreateUser)
+
+	// Movie routes
+	httpMovieAdapter := NewHttpMovieAdapter(services.MovieService)
+	moviesRouterGroup := engine.Group("/movie", jwtMiddleware.MiddlewareFunc())
+	moviesRouterGroup.POST("", httpMovieAdapter.CreateMovie)
+	moviesRouterGroup.GET("", httpMovieAdapter.ListMovies)
+	moviesRouterGroup.GET("/:id", httpMovieAdapter.GetMovie)
+	moviesRouterGroup.PUT("/:id", httpMovieAdapter.UpdateMovie)
+	moviesRouterGroup.DELETE("/:id", httpMovieAdapter.DeleteMovie)
 
 	engine.Run("0.0.0.0:8081")
 }

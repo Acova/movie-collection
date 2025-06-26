@@ -27,7 +27,7 @@ func TestHttpUserReturnsDomainUser(t *testing.T) {
 }
 
 func TestListUsers(t *testing.T) {
-	// Mock the user service
+	gin.SetMode(gin.TestMode)
 	mockUserService := mock.MockUserService{
 		Users: []*domain.User{
 			{Email: "test@example.com", Name: "Test User", Password: "password123"},
@@ -35,7 +35,17 @@ func TestListUsers(t *testing.T) {
 	}
 
 	httpAdapter := NewHttpUserAdapter(&mockUserService)
-	users := httpAdapter.userService.ListUsers()
+
+	request, _ := http.NewRequest("GET", "/users", nil)
+	mockResponseWriter := httptest.NewRecorder()
+	mockContext, _ := gin.CreateTestContext(mockResponseWriter)
+	mockContext.Request = request
+
+	httpAdapter.ListUsers(mockContext)
+	users := []*domain.User{}
+	if err := json.Unmarshal(mockResponseWriter.Body.Bytes(), &users); err != nil {
+		t.Errorf("Failed to unmarshal response: %v", err)
+	}
 	if len(users) != 1 {
 		t.Errorf("Expected 1 user, but got %d", len(users))
 	}

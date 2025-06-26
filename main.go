@@ -26,9 +26,19 @@ func main() {
 		panic("Error creating user repository: " + err.Error())
 	}
 
+	postgresMovieRepository, err := postgresadapter.NewPostgresMovieRepository(dbConnection)
+	if err != nil {
+		panic("Error creating movie repository: " + err.Error())
+	}
+
 	// Initialize the controllers
 	userService := service.NewUserService(postgresUserRepository)
+	movieService := service.NewMovieService(postgresMovieRepository)
 
 	// Initialize the HTTP adapter
-	httpadapter.StartHttpServer(userService)
+	services := &httpadapter.HttpServices{
+		UserService:  userService,
+		MovieService: movieService,
+	}
+	httpadapter.StartHttpServer(services)
 }

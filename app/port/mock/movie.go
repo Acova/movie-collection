@@ -72,7 +72,7 @@ func (m *MockMovieService) GetMovie(id uint) (*domain.Movie, error) {
 
 func (m *MockMovieService) UpdateMovie(movie *domain.Movie) error {
 	for i, v := range m.Movies {
-		if v.Title == movie.Title {
+		if v.ID == movie.ID {
 			m.Movies[i] = movie
 			return nil
 		}
@@ -80,7 +80,7 @@ func (m *MockMovieService) UpdateMovie(movie *domain.Movie) error {
 	return errors.New("movie not found")
 }
 
-func (m *MockMovieService) DeleteMovie(movie domain.Movie) error {
+func (m *MockMovieService) DeleteMovie(movie *domain.Movie) error {
 	for i, v := range m.Movies {
 		if v.Title == movie.Title {
 			m.Movies = append(m.Movies[:i], m.Movies[i+1:]...)

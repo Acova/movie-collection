@@ -46,83 +46,90 @@ func NewHttpMovieAdapter(movieService port.MovieService) *HttpMovieAdapter {
 	}
 }
 
-func (h *HttpMovieAdapter) CreateMovie(context *gin.Context) error {
+func (h *HttpMovieAdapter) CreateMovie(context *gin.Context) {
 	movie := HttpMovie{}
 
 	if err := context.BindJSON(&movie); err != nil {
-		return context.AbortWithError(http.StatusBadRequest, err)
+		context.IndentedJSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+		return
 	}
 
 	h.movieService.CreateMovie(movie.ToDomain())
 	context.IndentedJSON(http.StatusCreated, gin.H{"status": "Movie created"})
-
-	return nil
 }
 
-func (h *HttpMovieAdapter) ListMovies(context *gin.Context) error {
+func (h *HttpMovieAdapter) ListMovies(context *gin.Context) {
 	movies, err := h.movieService.ListMovies()
 	if err != nil {
-		return context.AbortWithError(http.StatusInternalServerError, err)
+		context.AbortWithError(http.StatusInternalServerError, err)
+		return
 	}
 
 	context.IndentedJSON(http.StatusOK, movies)
-	return nil
 }
 
-func (h *HttpMovieAdapter) GetMovie(context *gin.Context) error {
+func (h *HttpMovieAdapter) GetMovie(context *gin.Context) {
 	id, err := strconv.ParseUint(context.Param("id"), 10, 64)
 	if err != nil {
-		return context.AbortWithError(http.StatusBadRequest, err)
+		context.AbortWithError(http.StatusBadRequest, err)
+		return
 	}
 
 	movie, err := h.movieService.GetMovie(uint(id))
 	if err != nil {
-		return context.AbortWithError(http.StatusNotFound, err)
+		context.AbortWithError(http.StatusNotFound, err)
+		return
 	}
 
 	context.IndentedJSON(http.StatusOK, movie)
-	return nil
 }
 
-func (h *HttpMovieAdapter) UpdateMovie(context *gin.Context) error {
+func (h *HttpMovieAdapter) UpdateMovie(context *gin.Context) {
 	id, err := strconv.ParseUint(context.Param("id"), 10, 64)
 	if err != nil {
-		return context.AbortWithError(http.StatusBadRequest, err)
+		context.AbortWithError(http.StatusBadRequest, err)
+		return
 	}
 
 	_, err = h.movieService.GetMovie(uint(id))
 	if err != nil {
-		return context.AbortWithError(http.StatusNotFound, err)
+		context.AbortWithError(http.StatusNotFound, err)
+		return
 	}
 
 	updatedMovie := HttpMovie{}
 	if err := context.BindJSON(&updatedMovie); err != nil {
-		return context.AbortWithError(http.StatusBadRequest, err)
+		context.AbortWithError(http.StatusBadRequest, err)
+		return
 	}
 
-	if err := h.movieService.UpdateMovie(updatedMovie.ToDomain()); err != nil {
-		return context.AbortWithError(http.StatusInternalServerError, err)
+	updatedDomainMovie := updatedMovie.ToDomain()
+	updatedDomainMovie.ID = uint(id)
+	if err := h.movieService.UpdateMovie(updatedDomainMovie); err != nil {
+		context.AbortWithError(http.StatusInternalServerError, err)
+		return
 	}
 
 	context.IndentedJSON(http.StatusOK, gin.H{"status": "Movie updated"})
-	return nil
 }
 
-func (h *HttpMovieAdapter) DeleteMovie(context *gin.Context) error {
+func (h *HttpMovieAdapter) DeleteMovie(context *gin.Context) {
 	id, err := strconv.ParseUint(context.Param("id"), 10, 64)
 	if err != nil {
-		return context.AbortWithError(http.StatusBadRequest, err)
+		context.AbortWithError(http.StatusBadRequest, err)
+		return
 	}
 
 	movie, err := h.movieService.GetMovie(uint(id))
 	if err != nil {
-		return context.AbortWithError(http.StatusNotFound, err)
+		context.AbortWithError(http.StatusNotFound, err)
+		return
 	}
 
 	if err := h.movieService.DeleteMovie(movie); err != nil {
-		return context.AbortWithError(http.StatusInternalServerError, err)
+		context.AbortWithError(http.StatusInternalServerError, err)
+		return
 	}
 
 	context.IndentedJSON(http.StatusOK, gin.H{"status": "Movie deleted"})
-	return nil
 }
