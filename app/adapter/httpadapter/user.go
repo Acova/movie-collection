@@ -69,7 +69,17 @@ func (a *HttpUserAdapter) CreateUser(context *gin.Context) {
 		return
 	}
 
-	err := a.userService.CreateUser(user.ToDomain())
+	existingUser, err := a.userService.GetUserByEmail(user.Email)
+	if err != nil {
+		context.IndentedJSON(http.StatusInternalServerError, gin.H{"error": fmt.Sprintf("Failed to check existing user: %v", err)})
+		return
+	}
+	if existingUser != nil {
+		context.IndentedJSON(http.StatusConflict, gin.H{"error": fmt.Sprintf("User with email `%s` already exists", user.Email)})
+		return
+	}
+
+	err = a.userService.CreateUser(user.ToDomain())
 	if err != nil {
 		context.IndentedJSON(http.StatusInternalServerError, gin.H{"error": fmt.Sprintf("Failed to create user: %v", err)})
 		return
