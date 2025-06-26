@@ -17,5 +17,5 @@ func main() {
 		panic("Error connecting to the database: " + err.Error())
 	}
 
-	postgresDbConnection.DB.AutoMigrate(&postgresadapter.PostgresUser{})
+	postgresDbConnection.DB.AutoMigrate(&postgresadapter.PostgresUser{}, &postgresadapter.PostgresMovie{})
 }
