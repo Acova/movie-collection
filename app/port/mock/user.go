@@ -10,12 +10,13 @@ type MockUserRepository struct {
 	Users []*domain.User
 }
 
-func (r *MockUserRepository) ListUsers() []*domain.User {
-	return r.Users
+func (r *MockUserRepository) ListUsers() ([]*domain.User, error) {
+	return r.Users, nil
 }
 
-func (r *MockUserRepository) CreateUser(user *domain.User) {
+func (r *MockUserRepository) CreateUser(user *domain.User) error {
 	r.Users = append(r.Users, user)
+	return nil
 }
 
 func (r *MockUserRepository) GetUserByEmail(email string) (*domain.User, error) {
@@ -31,12 +32,13 @@ type MockUserService struct {
 	Users []*domain.User
 }
 
-func (m *MockUserService) CreateUser(user *domain.User) {
+func (m *MockUserService) CreateUser(user *domain.User) error {
 	m.Users = append(m.Users, user)
+	return nil
 }
 
-func (m *MockUserService) ListUsers() []*domain.User {
-	return m.Users
+func (m *MockUserService) ListUsers() ([]*domain.User, error) {
+	return m.Users, nil
 }
 
 func (m *MockUserService) GetLoginUser(email, password string) (*domain.User, error) {

@@ -34,18 +34,26 @@ func NewHttpUserAdapter(userService port.UserService) *HttpUserAdapter {
 }
 
 func (a *HttpUserAdapter) ListUsers(context *gin.Context) {
-	context.IndentedJSON(http.StatusOK, a.userService.ListUsers())
+	users, err := a.userService.ListUsers()
+	if err != nil {
+		context.IndentedJSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
+		return
+	}
+	context.IndentedJSON(http.StatusOK, users)
 }
 
 func (a *HttpUserAdapter) CreateUser(context *gin.Context) {
 	var user HttpUser
 
 	if err := context.BindJSON(&user); err != nil {
-		fmt.Println(err)
 		context.IndentedJSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 		return
 	}
 
-	a.userService.CreateUser(user.ToDomain())
+	err := a.userService.CreateUser(user.ToDomain())
+	if err != nil {
+		context.IndentedJSON(http.StatusInternalServerError, gin.H{"error": fmt.Sprintf("Failed to create user: %v", err)})
+		return
+	}
 	context.IndentedJSON(http.StatusCreated, gin.H{"status": "User created"})
 }

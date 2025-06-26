@@ -5,14 +5,14 @@ import (
 )
 
 type UserRepository interface {
-	ListUsers() []*domain.User
-	CreateUser(user *domain.User)
+	CreateUser(user *domain.User) error
+	ListUsers() ([]*domain.User, error)
 	GetUserByEmail(email string) (*domain.User, error)
 }
 
 type UserService interface {
-	CreateUser(user *domain.User)
-	ListUsers() []*domain.User
+	CreateUser(user *domain.User) error
+	ListUsers() ([]*domain.User, error)
 	GetLoginUser(email, password string) (*domain.User, error)
 	GetUserByEmail(email string) (*domain.User, error)
 }

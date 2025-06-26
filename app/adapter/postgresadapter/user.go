@@ -10,7 +10,7 @@ import (
 type PostgresUser struct {
 	gorm.Model
 	ID           uint
-	Email        string    `gorm:"not null;uniqueIndex"`
+	Email        string    `gorm:"not null"`
 	Name         string    `gorm:"not null"`
 	Password     string    `gorm:"not null"`
 	DisabledDate time.Time `gorm:"default:NULL"`
@@ -40,11 +40,11 @@ func NewPostgresUserRepository(postgres *PostgresDBConnection) (*PostgresUserRep
 	}, nil
 }
 
-func (repository *PostgresUserRepository) ListUsers() []*domain.User {
+func (repository *PostgresUserRepository) ListUsers() ([]*domain.User, error) {
 	var postgresUsers []PostgresUser
 	result := repository.postgres.DB.Find(&postgresUsers)
 	if result.Error != nil {
-		panic("failed to list users: " + result.Error.Error())
+		return nil, result.Error
 	}
 
 	users := make([]*domain.User, len(postgresUsers))
@@ -52,10 +52,10 @@ func (repository *PostgresUserRepository) ListUsers() []*domain.User {
 		users[i] = postgresUser.ToDomain()
 	}
 
-	return users
+	return users, nil
 }
 
-func (repository *PostgresUserRepository) CreateUser(user *domain.User) {
+func (repository *PostgresUserRepository) CreateUser(user *domain.User) error {
 	postgresUser := PostgresUser{
 		Email:        user.Email,
 		Name:         user.Name,
@@ -65,8 +65,10 @@ func (repository *PostgresUserRepository) CreateUser(user *domain.User) {
 
 	result := repository.postgres.DB.Create(&postgresUser)
 	if result.Error != nil {
-		panic("failed to create user: " + result.Error.Error())
+		return result.Error
 	}
+
+	return nil
 }
 
 func (repository *PostgresUserRepository) GetUserByEmail(email string) (*domain.User, error) {

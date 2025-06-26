@@ -17,7 +17,10 @@ func TestListUsers(t *testing.T) {
 	}
 
 	userService := NewUserService(mockRepository)
-	users := userService.ListUsers()
+	users, err := userService.ListUsers()
+	if err != nil {
+		t.Errorf("Expected no error, got %v", err)
+	}
 	if len(users) != 2 {
 		t.Errorf("Expected 2 users, got %d", len(users))
 	}

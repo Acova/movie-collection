@@ -16,18 +16,20 @@ func NewUserService(repo port.UserRepository) *UserPort {
 	}
 }
 
-func (c *UserPort) ListUsers() []*domain.User {
+func (c *UserPort) ListUsers() ([]*domain.User, error) {
 	return c.Repo.ListUsers()
 }
 
-func (c *UserPort) CreateUser(user *domain.User) {
+func (c *UserPort) CreateUser(user *domain.User) error {
 	hashedPassword, err := util.HashPassword(user.Password)
 	if err != nil {
-		panic("Error hashing password: " + err.Error())
+		return err
 	}
 
 	user.Password = hashedPassword
 	c.Repo.CreateUser(user)
+
+	return nil
 }
 
 func (c *UserPort) GetLoginUser(email, password string) (*domain.User, error) {
