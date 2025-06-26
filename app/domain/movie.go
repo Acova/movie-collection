@@ -13,4 +13,5 @@ type Movie struct {
 	Rating      float64
 	Duration    int
 	PosterURL   string
+	UserID      uint
 }

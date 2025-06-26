@@ -1,7 +1,6 @@
 package httpadapter
 
 import (
-	"fmt"
 	"os"
 	"time"
 
@@ -34,13 +33,15 @@ func StartHttpServer(services *HttpServices) {
 	// Login route
 	engine.POST("/login", jwtMiddleware.LoginHandler)
 
+	// User registration route
+	engine.POST("/user", httpUserAdapter.CreateUser)
+
 	// Refresh route
 	engine.GET("/refresh_token", jwtMiddleware.MiddlewareFunc(), jwtMiddleware.RefreshHandler)
 
 	// User routes
 	usersRouterGroup := engine.Group("/user", jwtMiddleware.MiddlewareFunc())
 	usersRouterGroup.GET("", httpUserAdapter.ListUsers)
-	usersRouterGroup.POST("", httpUserAdapter.CreateUser)
 
 	// Movie routes
 	httpMovieAdapter := NewHttpMovieAdapter(services.MovieService)
@@ -92,10 +93,9 @@ func getJwtInitParams(userService port.UserService) *jwt.GinJWTMiddleware {
 		TokenHeadName: "Bearer",
 		TimeFunc:      time.Now,
 		PayloadFunc: func(data interface{}) jwt.MapClaims {
-			fmt.Println("Calling PayloadFunc with data:", data)
 			if user, ok := data.(*domain.User); ok {
 				return jwt.MapClaims{
-					"id":    user.Email,
+					"id":    user.ID,
 					"name":  user.Name,
 					"email": user.Email,
 				}
@@ -103,9 +103,9 @@ func getJwtInitParams(userService port.UserService) *jwt.GinJWTMiddleware {
 			return jwt.MapClaims{}
 		},
 		IdentityHandler: func(c *gin.Context) interface{} {
-			fmt.Println("Calling IdentityHandler")
 			claims := jwt.ExtractClaims(c)
 			return &domain.User{
+				ID:    uint(claims["id"].(float64)),
 				Email: claims["email"].(string),
 				Name:  claims["name"].(string),
 			}

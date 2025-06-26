@@ -11,4 +11,5 @@ type User struct {
 	Password     string
 	RegisterDate time.Time
 	DisableDate  time.Time
+	Movies       []Movie
 }

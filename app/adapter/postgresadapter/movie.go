@@ -19,6 +19,7 @@ type PostgresMovie struct {
 	Rating      float64
 	Duration    int
 	PosterURL   string
+	UserID      uint
 }
 
 func (PostgresMovie) TableName() string {
@@ -37,6 +38,7 @@ func (m *PostgresMovie) ToDomain() *domain.Movie {
 		Rating:      m.Rating,
 		Duration:    m.Duration,
 		PosterURL:   m.PosterURL,
+		UserID:      m.UserID,
 	}
 }
 
@@ -52,6 +54,7 @@ func FromDomain(movie *domain.Movie) (*PostgresMovie, error) {
 		Rating:      movie.Rating,
 		Duration:    movie.Duration,
 		PosterURL:   movie.PosterURL,
+		UserID:      movie.UserID,
 	}
 
 	return postgresMovie, nil

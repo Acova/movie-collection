@@ -10,10 +10,11 @@ import (
 type PostgresUser struct {
 	gorm.Model
 	ID           uint
-	Email        string    `gorm:"not null"`
-	Name         string    `gorm:"not null"`
-	Password     string    `gorm:"not null"`
-	DisabledDate time.Time `gorm:"default:NULL"`
+	Email        string          `gorm:"not null"`
+	Name         string          `gorm:"not null"`
+	Password     string          `gorm:"not null"`
+	DisabledDate time.Time       `gorm:"default:NULL"`
+	Movies       []PostgresMovie `gorm:"foreignKey:UserID"`
 }
 
 func (PostgresUser) TableName() string {
@@ -22,6 +23,7 @@ func (PostgresUser) TableName() string {
 
 func (u *PostgresUser) ToDomain() *domain.User {
 	return &domain.User{
+		ID:           u.ID,
 		Email:        u.Email,
 		Name:         u.Name,
 		Password:     u.Password,

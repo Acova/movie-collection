@@ -66,7 +66,21 @@ func (h *HttpMovieAdapter) CreateMovie(context *gin.Context) {
 		return
 	}
 
-	err = h.movieService.CreateMovie(movie.ToDomain())
+	userValue, exists := context.Get("id")
+	if !exists {
+		context.IndentedJSON(http.StatusUnauthorized, gin.H{"error": "User not authenticated"})
+		return
+	}
+
+	user, ok := userValue.(*domain.User)
+	if !ok {
+		context.IndentedJSON(http.StatusInternalServerError, gin.H{"error": "Invalid user data"})
+		return
+	}
+
+	domainMovie := movie.ToDomain()
+	domainMovie.UserID = user.ID
+	err = h.movieService.CreateMovie(domainMovie)
 	if err != nil {
 		context.AbortWithError(http.StatusInternalServerError, err)
 		return
