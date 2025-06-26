@@ -205,7 +205,7 @@ func (h *HttpMovieAdapter) DeleteMovie(context *gin.Context) {
 	}
 
 	if movie.UserID != user.ID {
-		context.IndentedJSON(http.StatusForbidden, gin.H{"error": "You are not allowed to update this movie"})
+		context.IndentedJSON(http.StatusForbidden, gin.H{"error": "You are not allowed to delete this movie"})
 		return
 	}
 
