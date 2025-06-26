@@ -16,6 +16,7 @@ type HttpMovieAdapter struct {
 }
 
 type HttpMovie struct {
+	ID          uint      `json:"id"`
 	Title       string    `json:"title" binding:"required,min=1,max=100"`
 	Director    string    `json:"director" binding:"max=50"`
 	Synopsis    string    `json:"synopsis" binding:"max=500"`
@@ -27,8 +28,24 @@ type HttpMovie struct {
 	PosterURL   string    `json:"poster_url"`
 }
 
+func FromDomain(movie *domain.Movie) *HttpMovie {
+	return &HttpMovie{
+		ID:          movie.ID,
+		Title:       movie.Title,
+		Director:    movie.Director,
+		Synopsis:    movie.Synopsis,
+		ReleaseDate: movie.ReleaseDate,
+		Cast:        movie.Cast,
+		Genre:       movie.Genre,
+		Rating:      movie.Rating,
+		Duration:    movie.Duration,
+		PosterURL:   movie.PosterURL,
+	}
+}
+
 func (h *HttpMovie) ToDomain() *domain.Movie {
 	return &domain.Movie{
+		ID:          h.ID,
 		Title:       h.Title,
 		Director:    h.Director,
 		Synopsis:    h.Synopsis,
@@ -85,7 +102,7 @@ func (h *HttpMovieAdapter) CreateMovie(context *gin.Context) {
 		context.AbortWithError(http.StatusInternalServerError, err)
 		return
 	}
-	context.IndentedJSON(http.StatusCreated, gin.H{"status": "Movie created"})
+	context.IndentedJSON(http.StatusCreated, FromDomain(domainMovie))
 }
 
 func (h *HttpMovieAdapter) ListMovies(context *gin.Context) {
@@ -102,10 +119,16 @@ func (h *HttpMovieAdapter) ListMovies(context *gin.Context) {
 	if cast := context.Query("cast"); cast != "" {
 		filter["cast"] = "%" + cast + "%"
 	}
-	movies, err := h.movieService.ListMovies(filter)
+
+	domainMovies, err := h.movieService.ListMovies(filter)
 	if err != nil {
 		context.AbortWithError(http.StatusInternalServerError, err)
 		return
+	}
+
+	movies := make([]*HttpMovie, len(domainMovies))
+	for i, movie := range domainMovies {
+		movies[i] = FromDomain(movie)
 	}
 
 	context.IndentedJSON(http.StatusOK, movies)
@@ -124,7 +147,7 @@ func (h *HttpMovieAdapter) GetMovie(context *gin.Context) {
 		return
 	}
 
-	context.IndentedJSON(http.StatusOK, movie)
+	context.IndentedJSON(http.StatusOK, FromDomain(movie))
 }
 
 func (h *HttpMovieAdapter) UpdateMovie(context *gin.Context) {
@@ -134,7 +157,7 @@ func (h *HttpMovieAdapter) UpdateMovie(context *gin.Context) {
 		return
 	}
 
-	_, err = h.movieService.GetMovie(uint(id))
+	movieToUpdate, err := h.movieService.GetMovie(uint(id))
 	if err != nil {
 		context.AbortWithError(http.StatusNotFound, err)
 		return
@@ -148,12 +171,13 @@ func (h *HttpMovieAdapter) UpdateMovie(context *gin.Context) {
 
 	updatedDomainMovie := updatedMovie.ToDomain()
 	updatedDomainMovie.ID = uint(id)
+	updatedDomainMovie.UserID = movieToUpdate.UserID // Preserve the user ID
 	if err := h.movieService.UpdateMovie(updatedDomainMovie); err != nil {
 		context.AbortWithError(http.StatusInternalServerError, err)
 		return
 	}
 
-	context.IndentedJSON(http.StatusOK, gin.H{"status": "Movie updated"})
+	context.IndentedJSON(http.StatusOK, FromDomain(updatedDomainMovie))
 }
 
 func (h *HttpMovieAdapter) DeleteMovie(context *gin.Context) {
