@@ -16,11 +16,11 @@ type HttpMovieAdapter struct {
 
 type HttpMovie struct {
 	Title       string    `json:"title" binding:"required,min=1,max=100"`
-	Director    string    `json:"director" binding:"min=1,max=50"`
-	Synopsis    string    `json:"synopsis" binding:"min=1,max=500"`
+	Director    string    `json:"director" binding:"max=50"`
+	Synopsis    string    `json:"synopsis" binding:"max=500"`
 	ReleaseDate time.Time `json:"release_date"`
-	Cast        string    `json:"cast" binding:"min=1,max=200"`
-	Genre       string    `json:"genre" binding:"min=1,max=50"`
+	Cast        string    `json:"cast" binding:"max=200"`
+	Genre       string    `json:"genre" binding:"max=50"`
 	Rating      float64   `json:"rating" binding:"min=0,max=10"`
 	Duration    int       `json:"duration" binding:"min=0"`
 	PosterURL   string    `json:"poster_url"`
