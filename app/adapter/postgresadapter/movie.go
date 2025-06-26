@@ -27,6 +27,7 @@ func (PostgresMovie) TableName() string {
 
 func (m *PostgresMovie) ToDomain() *domain.Movie {
 	return &domain.Movie{
+		ID:          m.ID,
 		Title:       m.Title,
 		Director:    m.Director,
 		ReleaseDate: m.ReleaseDate,
@@ -37,6 +38,23 @@ func (m *PostgresMovie) ToDomain() *domain.Movie {
 		Duration:    m.Duration,
 		PosterURL:   m.PosterURL,
 	}
+}
+
+func FromDomain(movie *domain.Movie) (*PostgresMovie, error) {
+	postgresMovie := &PostgresMovie{
+		ID:          movie.ID,
+		Title:       movie.Title,
+		Director:    movie.Director,
+		ReleaseDate: movie.ReleaseDate,
+		Cast:        movie.Cast,
+		Genre:       movie.Genre,
+		Synopsis:    movie.Synopsis,
+		Rating:      movie.Rating,
+		Duration:    movie.Duration,
+		PosterURL:   movie.PosterURL,
+	}
+
+	return postgresMovie, nil
 }
 
 type PostgresMovieRepository struct {
@@ -65,16 +83,9 @@ func (repository *PostgresMovieRepository) ListMovies() ([]*domain.Movie, error)
 }
 
 func (repository *PostgresMovieRepository) CreateMovie(movie *domain.Movie) error {
-	postgresMovie := PostgresMovie{
-		Title:       movie.Title,
-		Director:    movie.Director,
-		ReleaseDate: movie.ReleaseDate,
-		Cast:        movie.Cast,
-		Genre:       movie.Genre,
-		Synopsis:    movie.Synopsis,
-		Rating:      movie.Rating,
-		Duration:    movie.Duration,
-		PosterURL:   movie.PosterURL,
+	postgresMovie, err := FromDomain(movie)
+	if err != nil {
+		return err
 	}
 
 	result := repository.postgres.DB.Create(&postgresMovie)
@@ -89,4 +100,24 @@ func (repository *PostgresMovieRepository) GetMovieByTitle(title string) (*domai
 	}
 
 	return postgresMovie.ToDomain(), nil
+}
+
+func (repository *PostgresMovieRepository) UpdateMovie(movie *domain.Movie) error {
+	postgresMovie, err := FromDomain(movie)
+	if err != nil {
+		return err
+	}
+
+	result := repository.postgres.DB.Save(&postgresMovie)
+	return result.Error
+}
+
+func (repository *PostgresMovieRepository) DeleteMovie(movie *domain.Movie) error {
+	postgresMovie, err := FromDomain(movie)
+	if err != nil {
+		return err
+	}
+
+	result := repository.postgres.DB.Delete(&postgresMovie)
+	return result.Error
 }
