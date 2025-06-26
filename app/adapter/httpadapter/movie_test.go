@@ -46,6 +46,7 @@ func TestCreateMovie(t *testing.T) {
 	httpAdapter := NewHttpMovieAdapter(mockMovieService)
 
 	movie := &HttpMovie{
+		ID:          1,
 		Title:       "Inception",
 		Director:    "Christopher Nolan",
 		Synopsis:    "A thief who steals corporate secrets through the use of dream-sharing technology is given the inverse task of planting an idea into the mind of a CEO.",
@@ -67,6 +68,13 @@ func TestCreateMovie(t *testing.T) {
 	mockContext, _ := gin.CreateTestContext(mockResponseWriter)
 	mockContext.Request = request
 
+	loginUser := &domain.User{
+		ID:    1,
+		Email: "test@test.com",
+		Name:  "Test User",
+	}
+	mockContext.Set("id", loginUser)
+
 	httpAdapter.CreateMovie(mockContext)
 
 	if len(mockMovieService.Movies) != 1 {
@@ -82,7 +90,7 @@ func TestCreateMovie(t *testing.T) {
 		t.Errorf("Expected synopsis to be 'A thief who steals corporate secrets through the use of dream-sharing technology is given the inverse task of planting an idea into the mind of a CEO.', but got '%s'", mockMovieService.Movies[0].Synopsis)
 	}
 	if !mockMovieService.Movies[0].ReleaseDate.Equal(movie.ReleaseDate) {
-		t.Errorf("Expected release date to be '2010-07-16 00:00:00 +0000 UTC', but got '%s'", mockMovieService.Movies[0].ReleaseDate)
+		t.Errorf("Expected release date to be '%s', but got '%s'", movie.ReleaseDate, mockMovieService.Movies[0].ReleaseDate)
 	}
 	if mockMovieService.Movies[0].Cast != "Leonardo DiCaprio, Joseph Gordon-Levitt, Ellen Page" {
 		t.Errorf("Expected cast to be 'Leonardo DiCaprio, Joseph Gordon-Levitt, Ellen Page', but got '%s'", mockMovieService.Movies[0].Cast)
@@ -106,6 +114,7 @@ func TestListMovies(t *testing.T) {
 	mockMovieService := &mock.MockMovieService{
 		Movies: []*domain.Movie{
 			{
+				ID:          1,
 				Title:       "Inception",
 				Director:    "Christopher Nolan",
 				Synopsis:    "A thief who steals corporate secrets through the use of dream-sharing technology is given the inverse task of planting an idea into the mind of a CEO.",
@@ -126,8 +135,15 @@ func TestListMovies(t *testing.T) {
 	mockContext, _ := gin.CreateTestContext(mockResponseWriter)
 	mockContext.Request = request
 
+	loginUser := &domain.User{
+		ID:    1,
+		Email: "test@test.com",
+		Name:  "Test User",
+	}
+	mockContext.Set("id", loginUser)
+
 	httpAdapter.ListMovies(mockContext)
-	movies := []*domain.Movie{}
+	movies := []*HttpMovie{}
 	if err := json.Unmarshal(mockResponseWriter.Body.Bytes(), &movies); err != nil {
 		t.Errorf("Failed to unmarshal response: %v", err)
 	}
@@ -192,7 +208,7 @@ func TestGetMovie(t *testing.T) {
 
 	httpAdapter.GetMovie(mockContext)
 
-	movie := &domain.Movie{}
+	movie := &HttpMovie{}
 	if err := json.Unmarshal(mockResponseWriter.Body.Bytes(), movie); err != nil {
 		t.Errorf("Failed to unmarshal response: %v", err)
 	}
@@ -244,6 +260,7 @@ func TestUpdateMovie(t *testing.T) {
 	}
 
 	movie := &HttpMovie{
+		ID:          1,
 		Title:       "Inception Updated",
 		Director:    "Christopher Nolan",
 		Synopsis:    "An updated synopsis for Inception.",
