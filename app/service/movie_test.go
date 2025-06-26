@@ -70,7 +70,7 @@ func TestListMovies(t *testing.T) {
 	}
 
 	movieService := NewMovieService(mockRepository)
-	movies, err := movieService.ListMovies()
+	movies, err := movieService.ListMovies(make(map[string]string))
 	if err != nil {
 		t.Errorf("Expected no error, got %v", err)
 	}

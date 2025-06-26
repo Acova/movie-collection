@@ -10,7 +10,7 @@ import (
 type PostgresMovie struct {
 	gorm.Model
 	ID          uint
-	Title       string `gorm:"not null;uniqueIndex"`
+	Title       string `gorm:"not null"`
 	Director    string
 	ReleaseDate time.Time
 	Cast        string
@@ -67,9 +67,16 @@ func NewPostgresMovieRepository(postgres *PostgresDBConnection) (*PostgresMovieR
 	}, nil
 }
 
-func (repository *PostgresMovieRepository) ListMovies() ([]*domain.Movie, error) {
+func (repository *PostgresMovieRepository) ListMovies(filters map[string]string) ([]*domain.Movie, error) {
 	var postgresMovies []PostgresMovie
-	result := repository.postgres.DB.Find(&postgresMovies)
+	db := repository.postgres.DB
+	for field, value := range filters {
+		switch field {
+		case "title":
+			db = db.Where("title ILIKE ?", value)
+		}
+	}
+	result := db.Find(&postgresMovies)
 	if result.Error != nil {
 		return nil, result.Error
 	}

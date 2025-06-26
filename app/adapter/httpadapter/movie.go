@@ -1,6 +1,7 @@
 package httpadapter
 
 import (
+	"fmt"
 	"net/http"
 	"strconv"
 	"time"
@@ -54,12 +55,27 @@ func (h *HttpMovieAdapter) CreateMovie(context *gin.Context) {
 		return
 	}
 
-	h.movieService.CreateMovie(movie.ToDomain())
+	existingMovie, err := h.movieService.ListMovies(map[string]string{"title": movie.Title})
+	if err != nil {
+		context.AbortWithError(http.StatusInternalServerError, err)
+		return
+	}
+
+	if len(existingMovie) > 0 {
+		context.IndentedJSON(http.StatusConflict, gin.H{"error": fmt.Sprintf("Movie with name `%s` already exists", movie.Title)})
+		return
+	}
+
+	err = h.movieService.CreateMovie(movie.ToDomain())
+	if err != nil {
+		context.AbortWithError(http.StatusInternalServerError, err)
+		return
+	}
 	context.IndentedJSON(http.StatusCreated, gin.H{"status": "Movie created"})
 }
 
 func (h *HttpMovieAdapter) ListMovies(context *gin.Context) {
-	movies, err := h.movieService.ListMovies()
+	movies, err := h.movieService.ListMovies(make(map[string]string))
 	if err != nil {
 		context.AbortWithError(http.StatusInternalServerError, err)
 		return

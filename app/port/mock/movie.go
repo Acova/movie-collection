@@ -15,7 +15,7 @@ func (m *MockMovieRepository) CreateMovie(movie *domain.Movie) error {
 	return nil
 }
 
-func (m *MockMovieRepository) ListMovies() ([]*domain.Movie, error) {
+func (m *MockMovieRepository) ListMovies(filters map[string]string) ([]*domain.Movie, error) {
 	return m.Movies, nil
 }
 
@@ -57,7 +57,7 @@ func (m *MockMovieService) CreateMovie(movie *domain.Movie) error {
 	return nil
 }
 
-func (m *MockMovieService) ListMovies() ([]*domain.Movie, error) {
+func (m *MockMovieService) ListMovies(filters map[string]string) ([]*domain.Movie, error) {
 	return m.Movies, nil
 }
 

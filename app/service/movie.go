@@ -19,8 +19,8 @@ func (m *MovieService) CreateMovie(movie *domain.Movie) error {
 	return m.Repo.CreateMovie(movie)
 }
 
-func (m *MovieService) ListMovies() ([]*domain.Movie, error) {
-	movies, err := m.Repo.ListMovies()
+func (m *MovieService) ListMovies(filters map[string]string) ([]*domain.Movie, error) {
+	movies, err := m.Repo.ListMovies(filters)
 	if err != nil {
 		return nil, err
 	}
