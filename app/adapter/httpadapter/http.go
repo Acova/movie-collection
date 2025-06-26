@@ -9,6 +9,9 @@ import (
 	_ "github.com/Acova/movie-collection/docs" // Import the generated Swagger docs
 	jwt "github.com/appleboy/gin-jwt/v2"
 	"github.com/gin-gonic/gin"
+
+	swaggerFiles "github.com/swaggo/files"
+	ginSwagger "github.com/swaggo/gin-swagger"
 )
 
 type HttpServices struct {
@@ -30,6 +33,9 @@ func StartHttpServer(services *HttpServices) {
 	}
 
 	engine.Use(handleMiddleware(jwtMiddleware))
+
+	// Swagger documentation route
+	engine.GET("/swagger/*any", ginSwagger.WrapHandler(swaggerFiles.Handler))
 
 	// Login route
 	engine.POST("/login", jwtMiddleware.LoginHandler)
