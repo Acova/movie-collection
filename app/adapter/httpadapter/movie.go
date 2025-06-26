@@ -64,6 +64,20 @@ func NewHttpMovieAdapter(movieService port.MovieService) *HttpMovieAdapter {
 	}
 }
 
+// @Summary Create a new movie
+// @Description Create a new movie in the collection
+// @Tags Movies
+// @Accept json
+// @Produce json
+// @Param movie body HttpMovie true "Movie object"
+// @Success 201 {object} HttpMovie
+// @Failure 400 {object} map[string]string
+// @Failure 401 {object} map[string]string
+// @Failure 403 {object} map[string]string
+// @Failure 409 {object} map[string]string
+// @Failure 500 {object} map[string]string
+// @Router /movies [post]
+// @Security ApiKeyAuth
 func (h *HttpMovieAdapter) CreateMovie(context *gin.Context) {
 	movie := HttpMovie{}
 
@@ -99,6 +113,21 @@ func (h *HttpMovieAdapter) CreateMovie(context *gin.Context) {
 	context.IndentedJSON(http.StatusCreated, FromDomain(domainMovie))
 }
 
+// @Summary List movies
+// @Description List all movies with optional filters
+// @Tags Movies
+// @Accept json
+// @Produce json
+// @Param title query string false "Filter by movie title"
+// @Param director query string false "Filter by movie director"
+// @Param genre query string false "Filter by movie genre"
+// @Param cast query string false "Filter by movie cast"
+// @Success 200 {array} HttpMovie
+// @Failure 400 {object} map[string]string
+// @Failure 401 {object} map[string]string
+// @Failure 500 {object} map[string]string
+// @Router /movies [get]
+// @Security ApiKeyAuth
 func (h *HttpMovieAdapter) ListMovies(context *gin.Context) {
 	filter := make(map[string]string)
 	if title := context.Query("title"); title != "" {
@@ -128,6 +157,19 @@ func (h *HttpMovieAdapter) ListMovies(context *gin.Context) {
 	context.IndentedJSON(http.StatusOK, movies)
 }
 
+// @Summary Get a movie by ID
+// @Description Get details of a specific movie by its ID
+// @Tags Movies
+// @Accept json
+// @Produce json
+// @Param id path int true "Movie ID"
+// @Success 200 {object} HttpMovie
+// @Failure 400 {object} map[string]string
+// @Failure 401 {object} map[string]string
+// @Failure 404 {object} map[string]string
+// @Failure 500 {object} map[string]string
+// @Router /movies/{id} [get]
+// @Security ApiKeyAuth
 func (h *HttpMovieAdapter) GetMovie(context *gin.Context) {
 	id, err := strconv.ParseUint(context.Param("id"), 10, 64)
 	if err != nil {
@@ -144,6 +186,21 @@ func (h *HttpMovieAdapter) GetMovie(context *gin.Context) {
 	context.IndentedJSON(http.StatusOK, FromDomain(movie))
 }
 
+// @Summary Update a movie
+// @Description Update details of a specific movie by its ID
+// @Tags Movies
+// @Accept json
+// @Produce json
+// @Param id path int true "Movie ID"
+// @Param movie body HttpMovie true "Updated movie object"
+// @Success 200 {object} HttpMovie
+// @Failure 400 {object} map[string]string
+// @Failure 401 {object} map[string]string
+// @Failure 403 {object} map[string]string
+// @Failure 404 {object} map[string]string
+// @Failure 500 {object} map[string]string
+// @Router /movies/{id} [put]
+// @Security ApiKeyAuth
 func (h *HttpMovieAdapter) UpdateMovie(context *gin.Context) {
 	id, err := strconv.ParseUint(context.Param("id"), 10, 64)
 	if err != nil {
@@ -185,6 +242,20 @@ func (h *HttpMovieAdapter) UpdateMovie(context *gin.Context) {
 	context.IndentedJSON(http.StatusOK, FromDomain(updatedDomainMovie))
 }
 
+// @Summary Delete a movie
+// @Description Delete a specific movie by its ID
+// @Tags Movies
+// @Accept json
+// @Produce json
+// @Param id path int true "Movie ID"
+// @Success 200 {object} map[string]string
+// @Failure 400 {object} map[string]string
+// @Failure 401 {object} map[string]string
+// @Failure 403 {object} map[string]string
+// @Failure 404 {object} map[string]string
+// @Failure 500 {object} map[string]string
+// @Router /movies/{id} [delete]
+// @Security ApiKeyAuth
 func (h *HttpMovieAdapter) DeleteMovie(context *gin.Context) {
 	id, err := strconv.ParseUint(context.Param("id"), 10, 64)
 	if err != nil {

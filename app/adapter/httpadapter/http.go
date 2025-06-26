@@ -6,6 +6,7 @@ import (
 
 	"github.com/Acova/movie-collection/app/domain"
 	"github.com/Acova/movie-collection/app/port"
+	_ "github.com/Acova/movie-collection/docs" // Import the generated Swagger docs
 	jwt "github.com/appleboy/gin-jwt/v2"
 	"github.com/gin-gonic/gin"
 )
@@ -52,7 +53,7 @@ func StartHttpServer(services *HttpServices) {
 	moviesRouterGroup.PUT("/:id", httpMovieAdapter.UpdateMovie)
 	moviesRouterGroup.DELETE("/:id", httpMovieAdapter.DeleteMovie)
 
-	engine.Run("0.0.0.0:8081")
+	engine.Run("0.0.0.0:8080")
 }
 
 type LoginForm struct {

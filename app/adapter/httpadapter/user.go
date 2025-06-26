@@ -33,6 +33,15 @@ func NewHttpUserAdapter(userService port.UserService) *HttpUserAdapter {
 	}
 }
 
+// @Summary List all users
+// @Description List all users in the system
+// @Tags User
+// @Accept json
+// @Produce json
+// @Success 200 {array} domain.User
+// @Failure 500 {object} map[string]string
+// @Router /user [get]
+// @Security ApiKeyAuth
 func (a *HttpUserAdapter) ListUsers(context *gin.Context) {
 	users, err := a.userService.ListUsers()
 	if err != nil {
@@ -42,6 +51,16 @@ func (a *HttpUserAdapter) ListUsers(context *gin.Context) {
 	context.IndentedJSON(http.StatusOK, users)
 }
 
+// @Summary Create a new user
+// @Description Create a new user in the system
+// @Tags User
+// @Accept json
+// @Produce json
+// @Param user body HttpUser true "User data"
+// @Success 201 {object} map[string]string
+// @Failure 400 {object} map[string]string
+// @Failure 500 {object} map[string]string
+// @Router /user [post]
 func (a *HttpUserAdapter) CreateUser(context *gin.Context) {
 	var user HttpUser
 

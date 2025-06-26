@@ -7,6 +7,13 @@ import (
 	"github.com/joho/godotenv"
 )
 
+// @title Movie Collection API
+// @version 1.0
+// @description This is a simple API for managing a movie collection.
+
+// @host localhost:8080
+// @SecurityDefinitions.basic BasicAuth
+// @tokenUrl /login
 func main() {
 	// Load environment variables from .env file
 	err := godotenv.Load()
