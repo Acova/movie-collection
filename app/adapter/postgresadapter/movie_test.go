@@ -2,7 +2,6 @@ package postgresadapter
 
 import (
 	"testing"
-	"time"
 
 	"github.com/Acova/movie-collection/app/domain"
 )
@@ -20,7 +19,7 @@ func TestPostgresMovieToDomain(t *testing.T) {
 	postgresMovie := PostgresMovie{
 		Title:       "Inception",
 		Director:    "Christopher Nolan",
-		ReleaseDate: time.Now(),
+		ReleaseYear: 2010,
 		Cast:        "Leonardo DiCaprio, Joseph Gordon-Levitt",
 		Genre:       "Sci-Fi",
 		Synopsis:    "A mind-bending thriller",
@@ -37,8 +36,8 @@ func TestPostgresMovieToDomain(t *testing.T) {
 	if domainMovie.Director != postgresMovie.Director {
 		t.Errorf("Expected director '%s', got '%s'", postgresMovie.Director, domainMovie.Director)
 	}
-	if domainMovie.ReleaseDate != postgresMovie.ReleaseDate {
-		t.Errorf("Expected release date '%v', got '%v'", postgresMovie.ReleaseDate, domainMovie.ReleaseDate)
+	if domainMovie.ReleaseYear != postgresMovie.ReleaseYear {
+		t.Errorf("Expected release year '%v', got '%v'", postgresMovie.ReleaseYear, domainMovie.ReleaseYear)
 	}
 	if domainMovie.Cast != postgresMovie.Cast {
 		t.Errorf("Expected cast '%s', got '%s'", postgresMovie.Cast, domainMovie.Cast)
@@ -64,7 +63,7 @@ func TestPostgresMovieFromDomain(t *testing.T) {
 	domainMovie := &domain.Movie{
 		Title:       "Inception",
 		Director:    "Christopher Nolan",
-		ReleaseDate: time.Now(),
+		ReleaseYear: 2010,
 		Cast:        "Leonardo DiCaprio, Joseph Gordon-Levitt",
 		Genre:       "Sci-Fi",
 		Synopsis:    "A mind-bending thriller",
@@ -84,8 +83,8 @@ func TestPostgresMovieFromDomain(t *testing.T) {
 	if postgresMovie.Director != domainMovie.Director {
 		t.Errorf("Expected director '%s', got '%s'", domainMovie.Director, postgresMovie.Director)
 	}
-	if postgresMovie.ReleaseDate != domainMovie.ReleaseDate {
-		t.Errorf("Expected release date '%v', got '%v'", domainMovie.ReleaseDate, postgresMovie.ReleaseDate)
+	if postgresMovie.ReleaseYear != domainMovie.ReleaseYear {
+		t.Errorf("Expected release year '%v', got '%v'", domainMovie.ReleaseYear, postgresMovie.ReleaseYear)
 	}
 	if postgresMovie.Cast != domainMovie.Cast {
 		t.Errorf("Expected cast '%s', got '%s'", domainMovie.Cast, postgresMovie.Cast)

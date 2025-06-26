@@ -1,12 +1,10 @@
 package domain
 
-import "time"
-
 type Movie struct {
 	ID          uint
 	Title       string
 	Director    string
-	ReleaseDate time.Time
+	ReleaseYear int
 	Cast        string
 	Genre       string
 	Synopsis    string

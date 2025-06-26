@@ -2,7 +2,6 @@ package service
 
 import (
 	"testing"
-	"time"
 
 	"github.com/Acova/movie-collection/app/domain"
 	"github.com/Acova/movie-collection/app/port/mock"
@@ -18,7 +17,7 @@ func TestCreateMovie(t *testing.T) {
 		ID:          1,
 		Title:       "Inception",
 		Synopsis:    "A mind-bending thriller",
-		ReleaseDate: time.Now(),
+		ReleaseYear: 2010,
 		Director:    "Christopher Nolan",
 		Rating:      8.8,
 	}
@@ -36,8 +35,8 @@ func TestCreateMovie(t *testing.T) {
 	if mockRepository.Movies[0].Synopsis != movie.Synopsis {
 		t.Errorf("Expected movie synopsis %s, got %s", movie.Synopsis, mockRepository.Movies[0].Synopsis)
 	}
-	if mockRepository.Movies[0].ReleaseDate != movie.ReleaseDate {
-		t.Errorf("Expected movie release date %v, got %v", movie.ReleaseDate, mockRepository.Movies[0].ReleaseDate)
+	if mockRepository.Movies[0].ReleaseYear != movie.ReleaseYear {
+		t.Errorf("Expected movie release year %v, got %v", movie.ReleaseYear, mockRepository.Movies[0].ReleaseYear)
 	}
 	if mockRepository.Movies[0].Director != movie.Director {
 		t.Errorf("Expected movie director %s, got %s", movie.Director, mockRepository.Movies[0].Director)
@@ -54,7 +53,7 @@ func TestListMovies(t *testing.T) {
 				ID:          1,
 				Title:       "Inception",
 				Synopsis:    "A mind-bending thriller",
-				ReleaseDate: time.Now(),
+				ReleaseYear: 2010,
 				Director:    "Christopher Nolan",
 				Rating:      8.8,
 			},
@@ -62,7 +61,7 @@ func TestListMovies(t *testing.T) {
 				ID:          2,
 				Title:       "The Matrix",
 				Synopsis:    "A sci-fi classic",
-				ReleaseDate: time.Now(),
+				ReleaseYear: 1999,
 				Director:    "The Wachowskis",
 				Rating:      8.7,
 			},
@@ -84,8 +83,8 @@ func TestListMovies(t *testing.T) {
 		if movie.Synopsis != mockRepository.Movies[i].Synopsis {
 			t.Errorf("Expected movie synopsis %s, got %s", mockRepository.Movies[i].Synopsis, movie.Synopsis)
 		}
-		if movie.ReleaseDate != mockRepository.Movies[i].ReleaseDate {
-			t.Errorf("Expected movie release date %v, got %v", mockRepository.Movies[i].ReleaseDate, movie.ReleaseDate)
+		if movie.ReleaseYear != mockRepository.Movies[i].ReleaseYear {
+			t.Errorf("Expected movie release year %v, got %v", mockRepository.Movies[i].ReleaseYear, movie.ReleaseYear)
 		}
 		if movie.Director != mockRepository.Movies[i].Director {
 			t.Errorf("Expected movie director %s, got %s", mockRepository.Movies[i].Director, movie.Director)
@@ -103,7 +102,7 @@ func TestGetMovie(t *testing.T) {
 				ID:          1,
 				Title:       "Inception",
 				Synopsis:    "A mind-bending thriller",
-				ReleaseDate: time.Now(),
+				ReleaseYear: 2010,
 				Director:    "Christopher Nolan",
 				Rating:      8.8,
 			},
@@ -136,7 +135,7 @@ func TestUpdateMovie(t *testing.T) {
 				ID:          1,
 				Title:       "Inception",
 				Synopsis:    "A mind-bending thriller",
-				ReleaseDate: time.Now(),
+				ReleaseYear: 2010,
 				Director:    "Christopher Nolan",
 				Rating:      8.8,
 			},
@@ -148,7 +147,7 @@ func TestUpdateMovie(t *testing.T) {
 		ID:          1,
 		Title:       "Inception",
 		Synopsis:    "An updated synopsis",
-		ReleaseDate: time.Now(),
+		ReleaseYear: 2010,
 		Director:    "Christopher Nolan",
 		Rating:      9.0,
 	}
@@ -172,7 +171,7 @@ func TestDeleteMovie(t *testing.T) {
 				ID:          1,
 				Title:       "Inception",
 				Synopsis:    "A mind-bending thriller",
-				ReleaseDate: time.Now(),
+				ReleaseYear: 2010,
 				Director:    "Christopher Nolan",
 				Rating:      8.8,
 			},

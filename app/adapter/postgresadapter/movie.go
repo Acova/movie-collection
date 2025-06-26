@@ -1,8 +1,6 @@
 package postgresadapter
 
 import (
-	"time"
-
 	"github.com/Acova/movie-collection/app/domain"
 	"gorm.io/gorm"
 )
@@ -12,7 +10,7 @@ type PostgresMovie struct {
 	ID          uint
 	Title       string `gorm:"not null"`
 	Director    string
-	ReleaseDate time.Time
+	ReleaseYear int
 	Cast        string
 	Genre       string
 	Synopsis    string
@@ -31,7 +29,7 @@ func (m *PostgresMovie) ToDomain() *domain.Movie {
 		ID:          m.ID,
 		Title:       m.Title,
 		Director:    m.Director,
-		ReleaseDate: m.ReleaseDate,
+		ReleaseYear: m.ReleaseYear,
 		Cast:        m.Cast,
 		Genre:       m.Genre,
 		Synopsis:    m.Synopsis,
@@ -47,7 +45,7 @@ func FromDomain(movie *domain.Movie) (*PostgresMovie, error) {
 		ID:          movie.ID,
 		Title:       movie.Title,
 		Director:    movie.Director,
-		ReleaseDate: movie.ReleaseDate,
+		ReleaseYear: movie.ReleaseYear,
 		Cast:        movie.Cast,
 		Genre:       movie.Genre,
 		Synopsis:    movie.Synopsis,

@@ -1,8 +1,6 @@
 package main
 
 import (
-	"time"
-
 	"github.com/Acova/movie-collection/app/adapter/postgresadapter"
 	"github.com/Acova/movie-collection/app/util"
 	"github.com/joho/godotenv"
@@ -52,7 +50,7 @@ func main() {
 		{
 			Title:       "The Godfather",
 			Director:    "Francis Ford Coppola",
-			ReleaseDate: time.Date(1972, 3, 24, 0, 0, 0, 0, time.UTC),
+			ReleaseYear: 1972,
 			Cast:        "Marlon Brando, Al Pacino, James Caan",
 			Genre:       "Crime, Drama",
 			Synopsis:    "The aging patriarch of an organized crime dynasty transfers control of his clandestine empire to his reluctant son.",
@@ -64,7 +62,7 @@ func main() {
 		{
 			Title:       "Matrix",
 			Director:    "The Wachowskis",
-			ReleaseDate: time.Date(1999, 3, 31, 0, 0, 0, 0, time.UTC),
+			ReleaseYear: 1999,
 			Cast:        "Keanu Reeves, Laurence Fishburne, Carrie-Anne Moss",
 			Genre:       "Action, Sci-Fi",
 			Synopsis:    "A computer hacker learns from mysterious rebels about the true nature of his reality and his role in the war against its controllers.",
@@ -76,7 +74,7 @@ func main() {
 		{
 			Title:       "The Avengers",
 			Director:    "Joss Whedon",
-			ReleaseDate: time.Date(2012, 5, 4, 0, 0, 0, 0, time.UTC),
+			ReleaseYear: 2012,
 			Cast:        "Robert Downey Jr., Chris Evans, Scarlett Johansson",
 			Genre:       "Action, Adventure, Sci-Fi",
 			Synopsis:    "The Avengers assemble to save the world from Loki and his army of aliens.",
@@ -88,7 +86,7 @@ func main() {
 		{
 			Title:       "Lord of the Rings: The Return of the King",
 			Director:    "Peter Jackson",
-			ReleaseDate: time.Date(2003, 12, 17, 0, 0, 0, 0, time.UTC),
+			ReleaseYear: 2003,
 			Cast:        "Elijah Wood, Viggo Mortensen, Ian McKellen",
 			Genre:       "Action, Adventure, Drama",
 			Synopsis:    "The final battle for Middle-earth begins.",

@@ -4,7 +4,6 @@ import (
 	"fmt"
 	"net/http"
 	"strconv"
-	"time"
 
 	"github.com/Acova/movie-collection/app/domain"
 	"github.com/Acova/movie-collection/app/port"
@@ -16,16 +15,16 @@ type HttpMovieAdapter struct {
 }
 
 type HttpMovie struct {
-	ID          uint      `json:"id"`
-	Title       string    `json:"title" binding:"required,min=1,max=100"`
-	Director    string    `json:"director" binding:"max=50"`
-	Synopsis    string    `json:"synopsis" binding:"max=500"`
-	ReleaseDate time.Time `json:"release_date"`
-	Cast        string    `json:"cast" binding:"max=200"`
-	Genre       string    `json:"genre" binding:"max=50"`
-	Rating      float64   `json:"rating" binding:"min=0,max=10"`
-	Duration    int       `json:"duration" binding:"min=0"`
-	PosterURL   string    `json:"poster_url"`
+	ID          uint    `json:"id"`
+	Title       string  `json:"title" binding:"required,min=1,max=100"`
+	Director    string  `json:"director" binding:"max=50"`
+	Synopsis    string  `json:"synopsis" binding:"max=500"`
+	ReleaseYear int     `json:"release_year"`
+	Cast        string  `json:"cast" binding:"max=200"`
+	Genre       string  `json:"genre" binding:"max=50"`
+	Rating      float64 `json:"rating" binding:"min=0,max=10"`
+	Duration    int     `json:"duration" binding:"min=0"`
+	PosterURL   string  `json:"poster_url"`
 }
 
 func FromDomain(movie *domain.Movie) *HttpMovie {
@@ -34,7 +33,7 @@ func FromDomain(movie *domain.Movie) *HttpMovie {
 		Title:       movie.Title,
 		Director:    movie.Director,
 		Synopsis:    movie.Synopsis,
-		ReleaseDate: movie.ReleaseDate,
+		ReleaseYear: movie.ReleaseYear,
 		Cast:        movie.Cast,
 		Genre:       movie.Genre,
 		Rating:      movie.Rating,
@@ -49,7 +48,7 @@ func (h *HttpMovie) ToDomain() *domain.Movie {
 		Title:       h.Title,
 		Director:    h.Director,
 		Synopsis:    h.Synopsis,
-		ReleaseDate: h.ReleaseDate,
+		ReleaseYear: h.ReleaseYear,
 		Cast:        h.Cast,
 		Genre:       h.Genre,
 		Rating:      h.Rating,

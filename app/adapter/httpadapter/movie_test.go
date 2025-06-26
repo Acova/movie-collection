@@ -6,7 +6,6 @@ import (
 	"net/http"
 	"net/http/httptest"
 	"testing"
-	"time"
 
 	"github.com/Acova/movie-collection/app/domain"
 	"github.com/Acova/movie-collection/app/port/mock"
@@ -18,7 +17,7 @@ func TestHttpMovieReturnsDomainMovie(t *testing.T) {
 		Title:       "Inception",
 		Director:    "Christopher Nolan",
 		Synopsis:    "A thief who steals corporate secrets through the use of dream-sharing technology is given the inverse task of planting an idea into the mind of a CEO.",
-		ReleaseDate: time.Date(2010, 7, 16, 0, 0, 0, 0, time.UTC),
+		ReleaseYear: 2010,
 		Cast:        "Leonardo DiCaprio, Joseph Gordon-Levitt, Ellen Page",
 		Genre:       "Science Fiction",
 		Rating:      8.8,
@@ -29,7 +28,7 @@ func TestHttpMovieReturnsDomainMovie(t *testing.T) {
 	domainMovie := movie.ToDomain()
 
 	if domainMovie.Title != movie.Title || domainMovie.Director != movie.Director ||
-		domainMovie.Synopsis != movie.Synopsis || !domainMovie.ReleaseDate.Equal(movie.ReleaseDate) ||
+		domainMovie.Synopsis != movie.Synopsis || domainMovie.ReleaseYear != movie.ReleaseYear ||
 		domainMovie.Cast != movie.Cast || domainMovie.Genre != movie.Genre ||
 		domainMovie.Rating != movie.Rating || domainMovie.Duration != movie.Duration ||
 		domainMovie.PosterURL != movie.PosterURL {
@@ -50,7 +49,7 @@ func TestCreateMovie(t *testing.T) {
 		Title:       "Inception",
 		Director:    "Christopher Nolan",
 		Synopsis:    "A thief who steals corporate secrets through the use of dream-sharing technology is given the inverse task of planting an idea into the mind of a CEO.",
-		ReleaseDate: time.Date(2010, 7, 16, 0, 0, 0, 0, time.UTC),
+		ReleaseYear: 2010,
 		Cast:        "Leonardo DiCaprio, Joseph Gordon-Levitt, Ellen Page",
 		Genre:       "Science Fiction",
 		Rating:      8.8,
@@ -89,8 +88,8 @@ func TestCreateMovie(t *testing.T) {
 	if mockMovieService.Movies[0].Synopsis != "A thief who steals corporate secrets through the use of dream-sharing technology is given the inverse task of planting an idea into the mind of a CEO." {
 		t.Errorf("Expected synopsis to be 'A thief who steals corporate secrets through the use of dream-sharing technology is given the inverse task of planting an idea into the mind of a CEO.', but got '%s'", mockMovieService.Movies[0].Synopsis)
 	}
-	if !mockMovieService.Movies[0].ReleaseDate.Equal(movie.ReleaseDate) {
-		t.Errorf("Expected release date to be '%s', but got '%s'", movie.ReleaseDate, mockMovieService.Movies[0].ReleaseDate)
+	if mockMovieService.Movies[0].ReleaseYear != movie.ReleaseYear {
+		t.Errorf("Expected release year to be '%d', but got '%d'", movie.ReleaseYear, mockMovieService.Movies[0].ReleaseYear)
 	}
 	if mockMovieService.Movies[0].Cast != "Leonardo DiCaprio, Joseph Gordon-Levitt, Ellen Page" {
 		t.Errorf("Expected cast to be 'Leonardo DiCaprio, Joseph Gordon-Levitt, Ellen Page', but got '%s'", mockMovieService.Movies[0].Cast)
@@ -118,7 +117,7 @@ func TestListMovies(t *testing.T) {
 				Title:       "Inception",
 				Director:    "Christopher Nolan",
 				Synopsis:    "A thief who steals corporate secrets through the use of dream-sharing technology is given the inverse task of planting an idea into the mind of a CEO.",
-				ReleaseDate: time.Date(2010, 7, 16, 0, 0, 0, 0, time.UTC),
+				ReleaseYear: 2010,
 				Cast:        "Leonardo DiCaprio, Joseph Gordon-Levitt, Ellen Page",
 				Genre:       "Science Fiction",
 				Rating:      8.8,
@@ -159,8 +158,8 @@ func TestListMovies(t *testing.T) {
 	if movies[0].Synopsis != "A thief who steals corporate secrets through the use of dream-sharing technology is given the inverse task of planting an idea into the mind of a CEO." {
 		t.Errorf("Expected synopsis to be 'A thief who steals corporate secrets through the use of dream-sharing technology is given the inverse task of planting an idea into the mind of a CEO.', but got '%s'", movies[0].Synopsis)
 	}
-	if !movies[0].ReleaseDate.Equal(time.Date(2010, 7, 16, 0, 0, 0, 0, time.UTC)) {
-		t.Errorf("Expected release date to be '2010-07-16 00:00:00 +0000 UTC', but got '%s'", movies[0].ReleaseDate)
+	if movies[0].ReleaseYear != 2010 {
+		t.Errorf("Expected release year to be '2010', but got '%d'", movies[0].ReleaseYear)
 	}
 	if movies[0].Cast != "Leonardo DiCaprio, Joseph Gordon-Levitt, Ellen Page" {
 		t.Errorf("Expected cast to be 'Leonardo DiCaprio, Joseph Gordon-Levitt, Ellen Page', but got '%s'", movies[0].Cast)
@@ -188,7 +187,7 @@ func TestGetMovie(t *testing.T) {
 				Title:       "Inception",
 				Director:    "Christopher Nolan",
 				Synopsis:    "A thief who steals corporate secrets through the use of dream-sharing technology is given the inverse task of planting an idea into the mind of a CEO.",
-				ReleaseDate: time.Date(2010, 7, 16, 0, 0, 0, 0, time.UTC),
+				ReleaseYear: 2010,
 				Cast:        "Leonardo DiCaprio, Joseph Gordon-Levitt, Ellen Page",
 				Genre:       "Science Fiction",
 				Rating:      8.8,
@@ -228,8 +227,8 @@ func TestGetMovie(t *testing.T) {
 	if movie.Synopsis != "A thief who steals corporate secrets through the use of dream-sharing technology is given the inverse task of planting an idea into the mind of a CEO." {
 		t.Errorf("Expected synopsis to be 'A thief who steals corporate secrets through the use of dream-sharing technology is given the inverse task of planting an idea into the mind of a CEO.', but got '%s'", movie.Synopsis)
 	}
-	if !movie.ReleaseDate.Equal(time.Date(2010, 7, 16, 0, 0, 0, 0, time.UTC)) {
-		t.Errorf("Expected release date to be '2010-07-16 00:00:00 +0000 UTC', but got '%s'", movie.ReleaseDate)
+	if movie.ReleaseYear != 2010 {
+		t.Errorf("Expected release year to be '2010', but got '%d'", movie.ReleaseYear)
 	}
 	if movie.Cast != "Leonardo DiCaprio, Joseph Gordon-Levitt, Ellen Page" {
 		t.Errorf("Expected cast to be 'Leonardo DiCaprio, Joseph Gordon-Levitt, Ellen Page', but got '%s'", movie.Cast)
@@ -256,7 +255,7 @@ func TestUpdateMovie(t *testing.T) {
 				Title:       "Inception",
 				Director:    "Christopher Nolan",
 				Synopsis:    "A thief who steals corporate secrets through the use of dream-sharing technology is given the inverse task of planting an idea into the mind of a CEO.",
-				ReleaseDate: time.Date(2010, 7, 16, 0, 0, 0, 0, time.UTC),
+				ReleaseYear: 2010,
 				Cast:        "Leonardo DiCaprio, Joseph Gordon-Levitt, Ellen Page",
 				Genre:       "Science Fiction",
 				Rating:      8.8,
@@ -272,7 +271,7 @@ func TestUpdateMovie(t *testing.T) {
 		Title:       "Inception Updated",
 		Director:    "Christopher Nolan",
 		Synopsis:    "An updated synopsis for Inception.",
-		ReleaseDate: time.Date(2010, 7, 16, 0, 0, 0, 0, time.UTC),
+		ReleaseYear: 2010,
 		Cast:        "Leonardo DiCaprio, Joseph Gordon-Levitt, Ellen Page",
 		Genre:       "Science Fiction",
 		Rating:      9.0,
@@ -326,7 +325,7 @@ func TestDeleteMovie(t *testing.T) {
 				Title:       "Inception",
 				Director:    "Christopher Nolan",
 				Synopsis:    "A thief who steals corporate secrets through the use of dream-sharing technology is given the inverse task of planting an idea into the mind of a CEO.",
-				ReleaseDate: time.Date(2010, 7, 16, 0, 0, 0, 0, time.UTC),
+				ReleaseYear: 2010,
 				Cast:        "Leonardo DiCaprio, Joseph Gordon-Levitt, Ellen Page",
 				Genre:       "Science Fiction",
 				Rating:      8.8,
